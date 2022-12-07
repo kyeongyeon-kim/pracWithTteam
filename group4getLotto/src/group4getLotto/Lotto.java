@@ -3,6 +3,11 @@ package group4getLotto;
 public class Lotto {
 
 	public static void main(String[] args) {
+		System.out.println("김주용");
+		System.out.println("김주용");
+		System.out.println("김경연");
+		System.out.println("김경연");
+		System.out.println("배원도");
 		// lotto
 		
 		////ssdfasrfjdbajdfbskaj;
@@ -12,5 +17,4 @@ public class Lotto {
 		
 		//오오오오오오오옹오ㅗ옹아아ㅗ아ㅗ아ㅗ아와와와오아ㅗ아오아와
 	}
-
 }
