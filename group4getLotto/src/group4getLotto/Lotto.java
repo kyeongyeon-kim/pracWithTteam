@@ -4,6 +4,7 @@ public class Lotto {
 
 	public static void main(String[] args) {
 		// lotto
+		// 영자면옥 맛있다.
 	}
 
 }
