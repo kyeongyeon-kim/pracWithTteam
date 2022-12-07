@@ -6,6 +6,7 @@ public class Lotto {
 		// lotto
 		// 영자면옥 맛있다.
 		// 오~ 영자면옥~
+		// 오~ 먹어봄 
 	}
 
 }
