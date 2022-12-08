@@ -120,7 +120,7 @@ public class ShowMeTheGUI extends JFrame{
 		labelPanel.setBounds(12, 10, 341, 303);
 		panel_2.add(labelPanel);
 		labelPanel.setLayout(new GridLayout(0, 6, 0, 0));
-		// 결과창 5행 6열의 라벨 넣기 (2중 배열)
+		// 결과창 5행 6열의 라벨 넣기 (2중 배열) 
 		JLabel[][] inputLabel = new JLabel[5][6];
 		for(int i = 0; i < inputLabel.length; i++) {
 			for(int j = 0; j < inputLabel[i].length; j++) {

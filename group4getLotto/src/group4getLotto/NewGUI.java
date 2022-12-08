@@ -62,7 +62,7 @@ class Print extends JFrame implements ActionListener{
 		main.add(right);
 		main.add(select);
 		add(main);
-		left.setLayout(g);
+		left.setLayout(g); 
 		
 		select.addActionListener(new ActionListener() {
 			@Override
