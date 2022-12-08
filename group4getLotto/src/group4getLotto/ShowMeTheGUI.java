@@ -1,21 +1,29 @@
-package group4getLotto;
+package prac;
 
 import java.awt.BorderLayout;
-
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.border.EmptyBorder;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
-class MyToggleButton extends JToggleButton{
+class MyToggleButton extends JToggleButton {
 	private boolean status = true;
 
 	public boolean isStatus() {
@@ -27,14 +35,21 @@ class MyToggleButton extends JToggleButton{
 	} 
 	
 }
-public class ShowMeTheGUI extends JFrame{
+public class ShowMeTheGUI extends JFrame implements ActionListener{
 	private JPanel contentPane;
+	private Set<Integer> inputNumSet1 = new HashSet<>();
+	private List<Integer> inputNumList1;
+	private MyToggleButton[] lottoNums = new MyToggleButton[45];
+	private JLabel[][] inputLabels = new JLabel[5][6];
+	private int emptyRow = 0;
+	private List<List> lists = new ArrayList<>();
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					ShowMeTheGUI frame = new ShowMeTheGUI();
 					frame.setVisible(true);
+					frame.setLocationRelativeTo(null);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -42,8 +57,6 @@ public class ShowMeTheGUI extends JFrame{
 		});
 	}
 	public ShowMeTheGUI() {
-		MyToggleButton[] rottoNums;
-		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 900, 600);
 		contentPane = new JPanel();
@@ -63,21 +76,11 @@ public class ShowMeTheGUI extends JFrame{
 		panel.add(BtnPanel);
 		// 토글버튼 45개 만들어서 생성하고 버튼 패널에 add하고 GridLayout 사용해서 정리하고 출력
 		for(int i = 0; i < 45; i++) {
-			rottoNums = new MyToggleButton[45];
-			rottoNums[i] = new MyToggleButton();
-			rottoNums[i].setText(String.valueOf(i + 1));
-			BtnPanel.add(rottoNums[i]);
-			rottoNums[i].addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					
-				}
-			});
-			
-		}	
-		
-		
+			lottoNums[i] = new MyToggleButton();
+			lottoNums[i].setText(String.valueOf(i + 1));
+			BtnPanel.add(lottoNums[i]);
+			lottoNums[i].addActionListener(this);
+		}
 		
 		JPanel panel_5 = new JPanel();
 		panel_5.setBounds(12, 428, 322, 103);
@@ -102,6 +105,37 @@ public class ShowMeTheGUI extends JFrame{
 		JButton select = new JButton("확인");
 		select.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String command = e.getActionCommand();
+				AbstractButton abstractButton = (AbstractButton) e.getSource();
+				boolean selected = abstractButton.getModel().isSelected();
+				try {
+					if (inputNumList1.size() == 6) {
+						if (command.equals("확인")) {
+							for (int i = 0; i < lottoNums.length; i++) {
+								lottoNums[i].setSelected(selected);
+							}
+									for (int i = 0; i < inputLabels[emptyRow].length; i++) {
+										String str = String.valueOf(inputNumList1.get(i));
+										inputLabels[emptyRow][i].setText(str);
+									}	
+									emptyRow++;
+									lists.add(inputNumList1);
+									inputNumList1.clear();
+									inputNumSet1.clear();
+									for (int i = 0; i < lottoNums.length; i++) {
+										lottoNums[i].setStatus(true);
+									}
+						}
+					} else {
+						JOptionPane.showMessageDialog(null, "6개를 선택해주세요.");
+					}
+				} catch (NullPointerException exception) {
+					JOptionPane.showMessageDialog(null, "6개를 선택해주세요.");
+				} catch (ArrayIndexOutOfBoundsException exception) {
+					JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
+					inputNumList1.clear();
+					inputNumSet1.clear();
+				}
 			}
 		});
 		select.setBounds(260, 480, 100, 40);
@@ -120,12 +154,10 @@ public class ShowMeTheGUI extends JFrame{
 		labelPanel.setBounds(12, 10, 341, 303);
 		panel_2.add(labelPanel);
 		labelPanel.setLayout(new GridLayout(0, 6, 0, 0));
-		// 결과창 5행 6열의 라벨 넣기 (2중 배열) 
-		JLabel[][] inputLabel = new JLabel[5][6];
-		for(int i = 0; i < inputLabel.length; i++) {
-			for(int j = 0; j < inputLabel[i].length; j++) {
-				inputLabel[i][j] = new JLabel("0");
-				labelPanel.add(inputLabel[i][j]);
+		for(int i = 0; i < inputLabels.length; i++) {
+			for(int j = 0; j < inputLabels[i].length; j++) {
+				inputLabels[i][j] = new JLabel("0");
+				labelPanel.add(inputLabels[i][j]);
 			}
 		}
 		
@@ -172,6 +204,35 @@ public class ShowMeTheGUI extends JFrame{
 		
 		JButton btnNewButton_9 = new JButton("초기화");
 		removePanel.add(btnNewButton_9);
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object check = e.getSource();
+		AbstractButton abstractButton = (AbstractButton) e.getSource();
+		boolean selected = abstractButton.getModel().isSelected();
+		for(int i = 0; i < lottoNums.length; i++) {
+			if(check == lottoNums[i]) {
+				if(lottoNums[i].isStatus() == true) {
+					inputNumSet1.add(Integer.parseInt(lottoNums[i].getText()));
+					lottoNums[i].setStatus(false);
+					
+					if(inputNumSet1.size() > 6) {
+						JOptionPane.showMessageDialog(null, "6자리 이상은 입력할 수 없습니다.");
+						inputNumSet1.remove(Integer.parseInt(lottoNums[i].getText()));
+						lottoNums[i].setSelected(!selected);
+						break;
+					}	
+					
+				} else if(lottoNums[i].isStatus() == false) {
+					lottoNums[i].setStatus(true);
+					inputNumSet1.remove(Integer.parseInt(lottoNums[i].getText()));
+				}
+			} 
+		}
+		System.out.println(inputNumSet1);
+		inputNumList1 = new ArrayList<>(inputNumSet1);
+		Collections.sort(inputNumList1);
 	}
 
 }

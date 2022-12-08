@@ -84,7 +84,7 @@ class Print extends JFrame implements ActionListener{
 		for(int i = 0; i < rottoNums.length; i++) {
 			if(check == rottoNums[i]) {
 				if(rottoNums[i].isStatus() == true) {
-					inputNumSet.add(Integer.parseInt(rottoNums[i].getText()));
+					inputNumSet1.add(Integer.parseInt(rottoNums[i].getText()));
 					rottoNums[i].setStatus(false);
 					
 					if(inputNumSet.size() > 6) {

@@ -1,5 +1,7 @@
-package group4getLotto;
+package prac;
 
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -117,6 +119,15 @@ class Rank {
 			}
 		}
 		
+	}
+	// 임시배열로 생성자 테스트
+	public static void main(String[] args) {
+		int[] list1 = new int[] {1, 2, 3, 4, 5, 6};
+		int[] list2 = new int[] {1, 2, 3, 4, 5, 6};
+		int[] list3 = new int[] {1, 2, 3, 4, 5, 6};
+		int[] list4 = new int[] {1, 2, 3, 4, 5, 6};
+		int[] list5 = new int[] {1, 2, 3, 4, 5, 6};
+		Rank r = new Rank(list1, list2, list3, list4, list5);
 	}
 	
 	public int rankMain(int[] list, LottoNumber lottoNumber) {
