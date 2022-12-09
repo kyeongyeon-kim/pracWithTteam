@@ -2,6 +2,8 @@ package group4getLotto;
 
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,17 +20,18 @@ public class Money extends JFrame {
       icon = new ImageIcon("money.png");
       
       
-      int[] list1 = {1, 5, 11 ,12, 30, 45};
-      int[] list2 = {4, 15, 10 ,17, 39, 41};
-      int[] list3 = {5, 35, 11 ,20, 32, 15};
+      int[] list1 = {1, 5, 11 ,12, 30, 37};
+      int[] list2 = {4, 12, 16 ,17, 39, 41};
+      int[] list3 = {5, 11, 15, 20, 32, 35};
       int[] list4 = {7, 13, 17 ,15, 40, 44};
-      int[] list5 = {9, 15, 40 ,19, 33, 25};
+      int[] list5 = {9, 18, 30 ,39, 43, 45};
       int[][] list_ = {list1, list2, list3, list4, list5}; // 임시 배열. 입력 받아야 됨
-//      int[] list1 = {1, 5, 11 ,12, 30, 45}; 배열 수 다르게 해도 적용 o
+//      int[] list1 = {1, 5, 11 ,12, 30, 45}; //배열 수 다르게 해도 적용 o
 //      int[] list2 = {4, 15, 10 ,17, 39, 41};
 //      int[][] list_ = {list1, list2};
       Rank ran = new Rank(list_);
       
+      new WhiteNumber();
       
       JPanel backgroud2 = new JPanel() {
          public void paintComponent(Graphics g) {
@@ -85,12 +88,10 @@ public class Money extends JFrame {
          }
       }
       int z = 0;
-      int s = 0;
       for (int i = 0; i < random.length; i++) {
          for (int j = 0; j < random[i].length; j++) {
-            z = i * 45 + 40;
-            s = j * 50 + 200;
-            random[i][j].setBounds(z, s, 40, 40);
+            z = i * 70 + 235;
+            random[i][j].setBounds(z, 55, 45, 45);
             ;
          }
       }
@@ -100,7 +101,11 @@ public class Money extends JFrame {
       for (int i = 0; i < countlbl.length; i++) {
          for (int j = 0; j < countlbl[i].length; j++) {
         	if (j < ran.getCountMain().length) {
-        		countlbl[i][j] = new JLabel(String.valueOf(ran.getCountMain()[j]) + "(+" + ran.getCountBonus()[j] + ")");
+        		if (ran.getCountMain()[j] == 5 && ran.getCountBonus()[j] == 1) {
+        			countlbl[i][j] = new JLabel(String.valueOf(ran.getCountMain()[j]) + "(+" + ran.getCountBonus()[j] + ")");
+        		} else {
+        			countlbl[i][j] = new JLabel(String.valueOf(ran.getCountMain()[j]));
+        		}
         	} else {
         		countlbl[i][j] = new JLabel("x");
         	}
@@ -111,7 +116,11 @@ public class Money extends JFrame {
       int w = 0;
       for (int i = 0; i < countlbl.length; i++) {
          for (int j = 0; j < countlbl[i].length; j++) {
-            q = i * 30 + 270;
+        	if (ran.getCountMain()[j] == 5 && ran.getCountBonus()[j] == 1) {
+        		q = i * 30 + 270;
+     		} else {
+     			q = i * 30 + 280;
+     		}
             w = j * 25 + 290;
             countlbl[i][j].setBounds(q, w, 40, 40);
             ;
@@ -142,18 +151,43 @@ public class Money extends JFrame {
       }
 
       // 확인 라벨
+      JLabel okNumberlbl[][] = new JLabel[5][6];
+      for (int i = 0; i < okNumberlbl.length; i++) {
+          for (int j = 0; j < okNumberlbl[i].length; j++) {
+        	  okNumberlbl[i][j] = new JLabel();
+        	  if (i < list_.length) {
+        		  int im = list_[i][j];
+        		  okNumberlbl[i][j].setIcon(WhiteNumber.image(im));
+        	  }
+        	  backgroud2.add(okNumberlbl[i][j]);
+          }
+      }
+      
+      
       
       JLabel oklbl[][] = new JLabel[5][6];
       for (int i = 0; i < oklbl.length; i++) {
          for (int j = 0; j < oklbl[i].length; j++) {
-            //// 이미지 추가 String Images = (i + 1) + ".png";
-        	 	if (i < list_.length) {
-//	            if (i < ran.getRank().length) {
-//	            	oklbl[i][j] = new JLabel(ran.getRank()[j]);
-	            	oklbl[i][j] = new JLabel(String.valueOf(list_[i][j]));
-		       	 } else {
-		       		oklbl[i][j] = new JLabel("x");
-		       	 }
+           //// 이미지 추가 String Images = (i + 1) + ".png";
+           if (i < list_.length) {
+        	   int colorSwNumber = 0;
+//        	   oklbl[i][j] = new JLabel(String.valueOf(list_[i][j]));
+        	   oklbl[i][j] = new JLabel();
+        	   if (ran.getLottoMain()[j] == list_[i][j]) {
+            		colorSwNumber++;
+            		if (colorSwNumber < 4) {
+            			oklbl[i][j].setIcon(new ImageIcon(Money.class.getResource("/group4getLotto/inputColor/b.png")));
+            		} else {
+            			oklbl[i][j].setIcon(new ImageIcon(Money.class.getResource("/group4getLotto/inputColor/r.png")));
+            		}
+            	} else if (ran.getLottoBonus() == list_[i][j]) {
+            		oklbl[i][j].setIcon(new ImageIcon(Money.class.getResource("/group4getLotto/inputColor/y.png")));
+            	} else {
+            		oklbl[i][j].setIcon(new ImageIcon(Money.class.getResource("/group4getLotto/inputColor/g.png")));
+            	}
+	       	} else {
+	       		oklbl[i][j] = new JLabel("x");
+	       	}
             
             backgroud2.add(oklbl[i][j]);
          }
@@ -166,15 +200,29 @@ public class Money extends JFrame {
         	x = j * 30 + 50;
             y = i * 25 + 290;
             oklbl[i][j].setBounds(x, y, 40, 40);
-            ;
+            
+            x = j * 30 + 50;
+            y = i * 25 + 290;
+            okNumberlbl[i][j].setBounds(x, y, 40, 40);
          }
       }
 
       // 확인버튼
       JButton okbtn = new JButton("확인");
+      okbtn.addMouseListener(new MouseAdapter() {
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if (okbtn == e.getSource()) {
+				dispose();
+			}
+		}
+	}); 
+	
+	
       backgroud2.add(okbtn);
       okbtn.setFont(new Font("굴림", Font.BOLD, 13));
-      okbtn.setBounds(155, 450, 70, 40);
+      okbtn.setBounds(340, 460, 70, 40);
    }
 
    public static void main(String[] args) {
@@ -182,7 +230,7 @@ public class Money extends JFrame {
       Money frame = new Money();
 
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      frame.setSize(400, 565);
+      frame.setSize(750, 580);
       frame.setVisible(true);
 
       // 마지막 고정작업
