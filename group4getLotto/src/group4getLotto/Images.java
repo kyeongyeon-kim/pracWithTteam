@@ -5,11 +5,14 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
 
-class Images extends Frame {
+import javax.swing.JFrame;
+
+class Images extends JFrame {
 	Image img;
 	public Images(String filename) {
 		Toolkit t = Toolkit.getDefaultToolkit();
 		this.img = t.getImage(filename);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	public void paint(Graphics g) {
 		g.drawImage(img, 20, 20, this);
