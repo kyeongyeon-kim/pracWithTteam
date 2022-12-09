@@ -197,13 +197,13 @@ public class Money extends JFrame {
       for (int i = 0; i < oklbl.length; i++) {
          for (int j = 0; j < oklbl[i].length; j++) {
 
-        	x = j * 30 + 50;
-            y = i * 25 + 290;
-            oklbl[i][j].setBounds(x, y, 40, 40);
+        	x = j * 70 + 130;
+        	y = i * 70 + 160;
+        	
+        	
+        	okNumberlbl[i][j].setBounds(x + 4, y + 4, 38, 38);
+            oklbl[i][j].setBounds(x, y, 45, 45);
             
-            x = j * 30 + 50;
-            y = i * 25 + 290;
-            okNumberlbl[i][j].setBounds(x, y, 40, 40);
          }
       }
 
