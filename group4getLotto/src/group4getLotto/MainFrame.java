@@ -41,8 +41,9 @@ public class MainFrame extends JFrame implements ActionListener {
 	private JLabel[] statusLabels = new JLabel[5];
 	private int fullRow = 0;
 	private List<List> lists = new ArrayList<>();
-	private Set<String> isItAuto = new HashSet<>();
-	
+	private int autoCount = 0;
+	private int manualCount = 0;
+	private boolean modifying = false;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -86,10 +87,12 @@ public class MainFrame extends JFrame implements ActionListener {
 				String command = e.getActionCommand();
 				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
-				fullRow = dicisionRowNum(statusLabels);
-				if (isAllRowFull(statusLabels) == 5) {
+				if (!modifying) {
+					fullRow = dicisionRowNum(statusLabels);
+				}
+				if (isAllRowFull(statusLabels) == 5 && !modifying) {
 					JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
-				} else {
+				}  else {
 					try {
 						if (inputNumList1.size() == 6) {
 							if (command.equals("확인")) {
@@ -102,17 +105,16 @@ public class MainFrame extends JFrame implements ActionListener {
 									inputLabels[fullRow][i].setText(str);
 								}
 								// 자동,수동,반자동 여부 결정
-								if (isItAuto.contains("자동") && isItAuto.contains("수동")) {
-									statusLabels[fullRow].setText("반자동");
-								} else if (isItAuto.contains("자동") && !isItAuto.contains("수동")) {
-									statusLabels[fullRow].setText("자동");
-								} else if (!isItAuto.contains("자동") && isItAuto.contains("수동")) {
+								if (manualCount == 6) {
 									statusLabels[fullRow].setText("수동");
+								} else if (autoCount == 6) {
+									statusLabels[fullRow].setText("자동");
+								} else {
+									statusLabels[fullRow].setText("반자동");
 								}
 								lists.add(inputNumList1);
 								inputNumList1.clear();
 								inputNumSet1.clear();
-								isItAuto.clear();
 							}
 						} else {
 							JOptionPane.showMessageDialog(null, "6개를 선택해주세요.");
@@ -125,7 +127,12 @@ public class MainFrame extends JFrame implements ActionListener {
 						inputNumSet1.clear();
 					}
 				}
+				modifying = false;
 				fullRow = 0;
+				System.out.println(autoCount);
+				System.out.println(manualCount);
+				autoCount = 0;
+				manualCount = 0;
 			}
 		});
 
@@ -156,9 +163,9 @@ public class MainFrame extends JFrame implements ActionListener {
 				String command = e.getActionCommand();
 				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
+				autoCount = 0;
 				if (command.equals("자동")) {
-					isItAuto.add("자동");
-					if (isAllRowFull(statusLabels) == 5) {
+					if (isAllRowFull(statusLabels) == 5 && !modifying) {
 						JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
 						inputNumList1.clear();
 						inputNumSet1.clear();
@@ -176,11 +183,13 @@ public class MainFrame extends JFrame implements ActionListener {
 								int num = inputNumList1.get(i) - 1;
 								lottoNums[num].setSelected(!selected);
 								lottoNums[num].setStatus(false);
+								autoCount++;
 							}
 						} else if (inputNumList1.size() < 6) {
 							while (inputNumSet1.size() < 6) {
 								int randomNum = random.nextInt(44) + 1;
 								inputNumSet1.add(randomNum + 1);
+								autoCount++;
 							}
 							inputNumList1 = new ArrayList<>(inputNumSet1);
 							Collections.sort(inputNumList1);
@@ -188,9 +197,7 @@ public class MainFrame extends JFrame implements ActionListener {
 								int num = inputNumList1.get(i) - 1;
 								lottoNums[num].setSelected(!selected);
 								lottoNums[num].setStatus(false);
-							}
-							for (int j = 0; j < 6 - inputNumList1.size(); j++) {
-
+								
 							}
 						}
 					}
@@ -236,7 +243,7 @@ public class MainFrame extends JFrame implements ActionListener {
 			statusLabels[i] = new JLabel("상태");
 			AutoOr.add(statusLabels[i]);
 		}
-		
+
 		JPanel changeRemovePanel = new JPanel();
 		changeRemovePanel.setBounds(420, 122, 70, 297);
 		right.add(changeRemovePanel);
@@ -252,14 +259,20 @@ public class MainFrame extends JFrame implements ActionListener {
 			changePanel.add(changeBtn[i]);
 
 			changeBtn[i].addActionListener(new ActionListener() {
+				
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					AbstractButton abstractButton = (AbstractButton) e.getSource();
+					boolean selected = abstractButton.getModel().isSelected();
+					for (int i = 0; i < lottoNums.length; i++) {
+						if (!lottoNums[i].isStatus()) {
+							lottoNums[i].setSelected(selected);
+							lottoNums[i].setStatus(true);
+						}
+					}
 					try {
-						AbstractButton abstractButton = (AbstractButton) e.getSource();
-						boolean selected = abstractButton.getModel().isSelected();
 						if (changeBtn[0] == e.getSource()) {
 							fullRow = 0;
-							statusLabels[0].setText("상태");
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
@@ -271,7 +284,6 @@ public class MainFrame extends JFrame implements ActionListener {
 
 						} else if (changeBtn[1] == e.getSource()) {
 							fullRow = 1;
-							statusLabels[1].setText("상태");
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
@@ -282,7 +294,6 @@ public class MainFrame extends JFrame implements ActionListener {
 							}
 						} else if (changeBtn[2] == e.getSource()) {
 							fullRow = 2;
-							statusLabels[2].setText("상태");
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
@@ -293,7 +304,6 @@ public class MainFrame extends JFrame implements ActionListener {
 							}
 						} else if (changeBtn[3] == e.getSource()) {
 							fullRow = 3;
-							statusLabels[3].setText("상태");
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
@@ -304,7 +314,6 @@ public class MainFrame extends JFrame implements ActionListener {
 							}
 						} else if (changeBtn[4] == e.getSource()) {
 							fullRow = 4;
-							statusLabels[4].setText("상태");
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
@@ -317,6 +326,9 @@ public class MainFrame extends JFrame implements ActionListener {
 					} catch (ArrayIndexOutOfBoundsException e2) {
 						JOptionPane.showMessageDialog(null, "해당 줄에 입력된 번호가 없습니다.");
 					}
+					modifying = true;
+					autoCount = 0;
+					manualCount = 0;
 				}
 			});
 		}
@@ -367,6 +379,9 @@ public class MainFrame extends JFrame implements ActionListener {
 					}
 					inputNumList1.clear();
 					inputNumSet1.clear();
+					autoCount = 0;
+					manualCount = 0;
+					fullRow = 0;
 				}
 			});
 		}
@@ -378,7 +393,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		Object check = e.getSource();
 		AbstractButton abstractButton = (AbstractButton) e.getSource();
 		boolean selected = abstractButton.getModel().isSelected();
-		if (isAllRowFull(statusLabels) == 5) {
+		if (isAllRowFull(statusLabels) == 5 && !modifying) {
 			JOptionPane.showMessageDialog(null, "모든번호가 선택되었습니다.");
 			for (int i = 0; i < lottoNums.length; i++) {
 				if (check == lottoNums[i]) {
@@ -389,29 +404,45 @@ public class MainFrame extends JFrame implements ActionListener {
 		} else {
 			for (int i = 0; i < lottoNums.length; i++) {
 				if (check == lottoNums[i]) {
-					isItAuto.add("수동");
-					if (lottoNums[i].isStatus() == true) {
+					if (lottoNums[i].isStatus()) {
 						inputNumSet1.add(Integer.parseInt(lottoNums[i].getText()));
 						lottoNums[i].setStatus(false);
-
+						manualCount++;
 						if (inputNumSet1.size() > 6) {
 							JOptionPane.showMessageDialog(null, "6자리 이상은 입력할 수 없습니다.");
 							inputNumSet1.remove(Integer.parseInt(lottoNums[i].getText()));
 							lottoNums[i].setSelected(!selected);
+							lottoNums[i].setStatus(true);
+							manualCount--;
 							break;
 						}
 
-					} else if (lottoNums[i].isStatus() == false) {
+					} else if (!lottoNums[i].isStatus()) {
 						lottoNums[i].setStatus(true);
 						inputNumSet1.remove(Integer.parseInt(lottoNums[i].getText()));
+						manualCount--;
 					}
 				}
 			}
 		}
 		inputNumList1 = new ArrayList<>(inputNumSet1);
 		Collections.sort(inputNumList1);
+		if (manualCount < 0) {
+			manualCount = 0;
+		}
 	}
-	
+
+	public static int falseCount(MyToggleButton[] arr) {
+		int count = 0;
+		for (int i = 0; i < arr.length; i++) {
+			if (!arr[i].isStatus()) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	// 상태값을 통해 비어있는 행에 도착할 수 있도록 해주는 메소드
 	public static int dicisionRowNum(JLabel[] Labels) {
 		int count = 0;
 		for (int i = 0; i < Labels.length; i++) {
@@ -423,7 +454,8 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		return count;
 	}
-	
+
+	// 상태값을 통해 비어있는 행이 몇개인지 알려주는 메소드
 	public static int isAllRowFull(JLabel[] Labels) {
 		int count = 0;
 		for (int i = 0; i < Labels.length; i++) {
@@ -433,5 +465,4 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		return count;
 	}
-
 }
