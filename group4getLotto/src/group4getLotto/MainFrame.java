@@ -40,8 +40,9 @@ public class MainFrame extends JFrame implements ActionListener {
 	private JLabel[][] inputLabels = new JLabel[5][6];
 	private JLabel[] statusLabels = new JLabel[5];
 	private int fullRow = 0;
-	private int rowNumForChange = 0;
 	private List<List> lists = new ArrayList<>();
+	private Set<String> isItAuto = new HashSet<>();
+	
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -85,7 +86,8 @@ public class MainFrame extends JFrame implements ActionListener {
 				String command = e.getActionCommand();
 				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
-				if (fullRow == 5) {
+				fullRow = dicisionRowNum(statusLabels);
+				if (isAllRowFull(statusLabels) == 5) {
 					JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
 				} else {
 					try {
@@ -93,18 +95,24 @@ public class MainFrame extends JFrame implements ActionListener {
 							if (command.equals("확인")) {
 								for (int i = 0; i < lottoNums.length; i++) {
 									lottoNums[i].setSelected(selected);
+									lottoNums[i].setStatus(true);
 								}
 								for (int i = 0; i < inputLabels[fullRow].length; i++) {
 									String str = String.valueOf(inputNumList1.get(i));
 									inputLabels[fullRow][i].setText(str);
 								}
-								fullRow++;
+								// 자동,수동,반자동 여부 결정
+								if (isItAuto.contains("자동") && isItAuto.contains("수동")) {
+									statusLabels[fullRow].setText("반자동");
+								} else if (isItAuto.contains("자동") && !isItAuto.contains("수동")) {
+									statusLabels[fullRow].setText("자동");
+								} else if (!isItAuto.contains("자동") && isItAuto.contains("수동")) {
+									statusLabels[fullRow].setText("수동");
+								}
 								lists.add(inputNumList1);
 								inputNumList1.clear();
 								inputNumSet1.clear();
-								for (int i = 0; i < lottoNums.length; i++) {
-									lottoNums[i].setStatus(true);
-								}
+								isItAuto.clear();
 							}
 						} else {
 							JOptionPane.showMessageDialog(null, "6개를 선택해주세요.");
@@ -117,6 +125,7 @@ public class MainFrame extends JFrame implements ActionListener {
 						inputNumSet1.clear();
 					}
 				}
+				fullRow = 0;
 			}
 		});
 
@@ -148,7 +157,8 @@ public class MainFrame extends JFrame implements ActionListener {
 				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
 				if (command.equals("자동")) {
-					if (fullRow == 5) {
+					isItAuto.add("자동");
+					if (isAllRowFull(statusLabels) == 5) {
 						JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
 						inputNumList1.clear();
 						inputNumSet1.clear();
@@ -197,13 +207,12 @@ public class MainFrame extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 다이얼 로그 호출하기
-				JOptionPane.showMessageDialog(null, "강사님 임시 결과창입니다~ 참고바랍니다~!");
-				Money frame = new Money();
-				frame.setLocationRelativeTo(null);
-				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				frame.setSize(400, 565);
-				frame.setVisible(true);
-				
+//				JOptionPane.showMessageDialog(null, "강사님 임시 결과창입니다~ 참고바랍니다~!");
+//				Money frame = new Money();
+//				frame.setLocationRelativeTo(null);
+//				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//				frame.setSize(400, 565);
+//				frame.setVisible(true);
 			}
 		});
 
@@ -227,7 +236,7 @@ public class MainFrame extends JFrame implements ActionListener {
 			statusLabels[i] = new JLabel("상태");
 			AutoOr.add(statusLabels[i]);
 		}
-
+		
 		JPanel changeRemovePanel = new JPanel();
 		changeRemovePanel.setBounds(420, 122, 70, 297);
 		right.add(changeRemovePanel);
@@ -250,6 +259,7 @@ public class MainFrame extends JFrame implements ActionListener {
 						boolean selected = abstractButton.getModel().isSelected();
 						if (changeBtn[0] == e.getSource()) {
 							fullRow = 0;
+							statusLabels[0].setText("상태");
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
@@ -261,6 +271,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
 						} else if (changeBtn[1] == e.getSource()) {
 							fullRow = 1;
+							statusLabels[1].setText("상태");
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
@@ -271,6 +282,7 @@ public class MainFrame extends JFrame implements ActionListener {
 							}
 						} else if (changeBtn[2] == e.getSource()) {
 							fullRow = 2;
+							statusLabels[2].setText("상태");
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
@@ -281,6 +293,7 @@ public class MainFrame extends JFrame implements ActionListener {
 							}
 						} else if (changeBtn[3] == e.getSource()) {
 							fullRow = 3;
+							statusLabels[3].setText("상태");
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
@@ -291,6 +304,7 @@ public class MainFrame extends JFrame implements ActionListener {
 							}
 						} else if (changeBtn[4] == e.getSource()) {
 							fullRow = 4;
+							statusLabels[4].setText("상태");
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
@@ -319,32 +333,40 @@ public class MainFrame extends JFrame implements ActionListener {
 			removeBtn[i].addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					AbstractButton abstractButton = (AbstractButton) e.getSource();
+					boolean selected = abstractButton.getModel().isSelected();
 					if (removeBtn[0] == e.getSource()) {
 						for (int j = 0; j <= inputLabels.length; j++) {
 							inputLabels[0][j].setText("0");
-							fullRow = 0;
+							statusLabels[0].setText("상태");
 						}
 					} else if (removeBtn[1] == e.getSource()) {
 						for (int j = 0; j <= inputLabels.length; j++) {
 							inputLabels[1][j].setText("0");
-							fullRow = 1;
+							statusLabels[1].setText("상태");
 						}
 					} else if (removeBtn[2] == e.getSource()) {
 						for (int j = 0; j <= inputLabels.length; j++) {
 							inputLabels[2][j].setText("0");
-							fullRow = 2;
+							statusLabels[2].setText("상태");
 						}
 					} else if (removeBtn[3] == e.getSource()) {
 						for (int j = 0; j <= inputLabels.length; j++) {
 							inputLabels[3][j].setText("0");
-							fullRow = 3;
+							statusLabels[3].setText("상태");
 						}
 					} else if (removeBtn[4] == e.getSource()) {
 						for (int j = 0; j <= inputLabels.length; j++) {
 							inputLabels[4][j].setText("0");
-							fullRow = 4;
+							statusLabels[4].setText("상태");
 						}
 					}
+					for (int i = 0; i < lottoNums.length; i++) {
+						lottoNums[i].setSelected(selected);
+						lottoNums[i].setStatus(true);
+					}
+					inputNumList1.clear();
+					inputNumSet1.clear();
 				}
 			});
 		}
@@ -356,7 +378,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		Object check = e.getSource();
 		AbstractButton abstractButton = (AbstractButton) e.getSource();
 		boolean selected = abstractButton.getModel().isSelected();
-		if (fullRow == 5) {
+		if (isAllRowFull(statusLabels) == 5) {
 			JOptionPane.showMessageDialog(null, "모든번호가 선택되었습니다.");
 			for (int i = 0; i < lottoNums.length; i++) {
 				if (check == lottoNums[i]) {
@@ -367,6 +389,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		} else {
 			for (int i = 0; i < lottoNums.length; i++) {
 				if (check == lottoNums[i]) {
+					isItAuto.add("수동");
 					if (lottoNums[i].isStatus() == true) {
 						inputNumSet1.add(Integer.parseInt(lottoNums[i].getText()));
 						lottoNums[i].setStatus(false);
@@ -387,6 +410,28 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		inputNumList1 = new ArrayList<>(inputNumSet1);
 		Collections.sort(inputNumList1);
+	}
+	
+	public static int dicisionRowNum(JLabel[] Labels) {
+		int count = 0;
+		for (int i = 0; i < Labels.length; i++) {
+			if (!Labels[i].getText().equals("상태")) {
+				count++;
+			} else {
+				break;
+			}
+		}
+		return count;
+	}
+	
+	public static int isAllRowFull(JLabel[] Labels) {
+		int count = 0;
+		for (int i = 0; i < Labels.length; i++) {
+			if (!Labels[i].getText().equals("상태")) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 }
