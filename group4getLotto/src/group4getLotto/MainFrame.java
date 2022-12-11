@@ -82,56 +82,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		JButton select = new JButton("확인");
 		select.setBounds(246, 410, 88, 32);
 		left.add(select);
-		select.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String command = e.getActionCommand();
-				AbstractButton abstractButton = (AbstractButton) e.getSource();
-				boolean selected = abstractButton.getModel().isSelected();
-				if (!modifying) {
-					fullRow = dicisionRowNum(statusLabels);
-				}
-				if (isAllRowFull(statusLabels) == 5 && !modifying) {
-					JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
-				} else {
-					try {
-						if (inputNumList1.size() == 6) {
-							if (command.equals("확인")) {
-								for (int i = 0; i < lottoNums.length; i++) {
-									lottoNums[i].setSelected(selected);
-									lottoNums[i].setStatus(true);
-								}
-								for (int i = 0; i < inputLabels[fullRow].length; i++) {
-									String str = String.valueOf(inputNumList1.get(i));
-									inputLabels[fullRow][i].setText(str);
-								}
-								// 자동,수동,반자동 여부 결정
-								if (manualCount == 6 && autoCount == 0) {
-									statusLabels[fullRow].setText("수동");
-								} else if (autoCount == 6 && manualCount == 0) {
-									statusLabels[fullRow].setText("자동");
-								} else {
-									statusLabels[fullRow].setText("반자동");
-								}
-								inputNumList1.clear();
-								inputNumSet1.clear();
-							}
-						} else {
-							JOptionPane.showMessageDialog(null, "6개를 선택해주세요.");
-						}
-					} catch (NullPointerException exception) {
-						JOptionPane.showMessageDialog(null, "6개를 선택해주세요.");
-					} catch (ArrayIndexOutOfBoundsException exception) {
-						JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
-						inputNumList1.clear();
-						inputNumSet1.clear();
-					}
-				}
-				modifying = false;
-				fullRow = 0;
-				autoCount = 0;
-				manualCount = 0;
-			}
-		});
+		confirmButton(select);
 
 		// 토글버튼 45개 만들어서 생성하고 버튼 패널에 add하고 GridLayout 사용해서 정리하고 출력
 		for (int i = 0; i < 45; i++) {
@@ -155,81 +106,16 @@ public class MainFrame extends JFrame implements ActionListener {
 
 		// 자동, 반자동 구현
 		JButton randombtn = new JButton("자동");
-		randombtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String command = e.getActionCommand();
-				AbstractButton abstractButton = (AbstractButton) e.getSource();
-				boolean selected = abstractButton.getModel().isSelected();
-				autoCount = 0;
-				if (command.equals("자동")) {
-					if (isAllRowFull(statusLabels) == 5 && !modifying) {
-						JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
-						inputNumList1.clear();
-						inputNumSet1.clear();
-					} else if (inputNumSet1.size() == 6) {
-						JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
-					} else {
-						if (inputNumSet1.size() == 0) {
-							while (inputNumSet1.size() < 6) {
-								int randomNum = random.nextInt(44) + 1;
-								inputNumSet1.add(randomNum + 1);
-							}
-							inputNumList1 = new ArrayList<>(inputNumSet1);
-							Collections.sort(inputNumList1);
-							for (int i = 0; i < inputNumList1.size(); i++) {
-								int num = inputNumList1.get(i) - 1;
-								lottoNums[num].setSelected(!selected);
-								lottoNums[num].setStatus(false);
-								autoCount++;
-							}
-						} else if (inputNumList1.size() < 6) {
-							while (inputNumSet1.size() < 6) {
-								int randomNum = random.nextInt(44) + 1;
-								inputNumSet1.add(randomNum + 1);
-								autoCount++;
-							}
-							inputNumList1 = new ArrayList<>(inputNumSet1);
-							Collections.sort(inputNumList1);
-							for (int i = 0; i < inputNumList1.size(); i++) {
-								int num = inputNumList1.get(i) - 1;
-								lottoNums[num].setSelected(!selected);
-								lottoNums[num].setStatus(false);
+		autoButton(randombtn);
 
-							}
-						}
-					}
-				}
-			}
-		});
 		randombtn.setBounds(146, 410, 88, 32);
 		left.add(randombtn);
-		
+
 		JButton result = new JButton("구매 하기");
 		result.setBounds(199, 455, 100, 40);
 		right.add(result);
-		result.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int labelStr = 0;
-				for (int i = 0; i < inputLabels.length; i++) {
-					List<Integer> list = new ArrayList<>();
-					for (int j = 0; j < inputLabels[i].length; j++) {
-						labelStr = Integer.parseInt(inputLabels[i][j].getText());
-						list.add(labelStr);
-					}
-					resultArr[i] = new ArrayList<>(list);
-					System.out.println(resultArr[i]);
-				}
-//				 다이얼 로그 호출하기
-				JOptionPane.showMessageDialog(null, "강사님 임시 결과창입니다~ 참고바랍니다~!");
-				// 결과창에 선택된 번호값 넘겨주는 방법
-//				Money frame = new Money(resultArr[0], resultArr[1], resultArr[2], resultArr[3], resultArr[4], resultArr[5]);
-//				frame.setLocationRelativeTo(null);
-//				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//				frame.setSize(400, 565);
-//				frame.setVisible(true);
-			}
-		});
+		resultButton(result);
+		
 
 		JPanel labelPanel = new JPanel();
 		labelPanel.setBounds(65, 122, 349, 297);
@@ -393,6 +279,138 @@ public class MainFrame extends JFrame implements ActionListener {
 				}
 			});
 		}
+
+	}
+	
+	public void resultButton(JButton result) {
+		result.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int labelStr = 0;
+				for (int i = 0; i < inputLabels.length; i++) {
+					List<Integer> list = new ArrayList<>();
+					for (int j = 0; j < inputLabels[i].length; j++) {
+						labelStr = Integer.parseInt(inputLabels[i][j].getText());
+						list.add(labelStr);
+					}
+					resultArr[i] = new ArrayList<>(list);
+					System.out.println(resultArr[i]);
+				}
+//				 다이얼 로그 호출하기
+				JOptionPane.showMessageDialog(null, "강사님 임시 결과창입니다~ 참고바랍니다~!");
+				// 결과창에 선택된 번호값 넘겨주는 방법
+//				Money frame = new Money(resultArr[0], resultArr[1], resultArr[2], resultArr[3], resultArr[4], resultArr[5]);
+//				frame.setLocationRelativeTo(null);
+//				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//				frame.setSize(400, 565);
+//				frame.setVisible(true);
+			}
+		});
+	}
+	
+	public void autoButton(JButton randombtn) {
+		randombtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String command = e.getActionCommand();
+				AbstractButton abstractButton = (AbstractButton) e.getSource();
+				boolean selected = abstractButton.getModel().isSelected();
+				
+				if (command.equals("자동")) {
+					if (isAllRowFull(statusLabels) == 5 && !modifying) {
+						JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
+						inputNumList1.clear();
+						inputNumSet1.clear();
+					} else if (inputNumSet1.size() == 6) {
+						JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
+					} else {
+						if (inputNumSet1.size() == 0) {
+							while (inputNumSet1.size() < 6) {
+								int randomNum = random.nextInt(44) + 1;
+								inputNumSet1.add(randomNum + 1);
+							}
+							autoCount = 0;
+							inputNumList1 = new ArrayList<>(inputNumSet1);
+							Collections.sort(inputNumList1);
+							for (int i = 0; i < inputNumList1.size(); i++) {
+								int num = inputNumList1.get(i) - 1;
+								lottoNums[num].setSelected(!selected);
+								lottoNums[num].setStatus(false);
+								autoCount++;
+							}
+						} else if (inputNumList1.size() < 6) {
+							while (inputNumSet1.size() < 6) {
+								int randomNum = random.nextInt(44) + 1;
+								inputNumSet1.add(randomNum + 1);
+								autoCount++;
+							}
+							inputNumList1 = new ArrayList<>(inputNumSet1);
+							Collections.sort(inputNumList1);
+							for (int i = 0; i < inputNumList1.size(); i++) {
+								int num = inputNumList1.get(i) - 1;
+								lottoNums[num].setSelected(!selected);
+								lottoNums[num].setStatus(false);
+
+							}
+						}
+					}
+				}
+			}
+		});
+	}
+	
+	public void confirmButton(JButton select) {
+		select.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String command = e.getActionCommand();
+				AbstractButton abstractButton = (AbstractButton) e.getSource();
+				boolean selected = abstractButton.getModel().isSelected();
+				if (!modifying) {
+					fullRow = dicisionRowNum(statusLabels);
+				}
+				if (isAllRowFull(statusLabels) == 5 && !modifying) {
+					JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
+				} else {
+					try {
+						if (inputNumList1.size() == 6) {
+							if (command.equals("확인")) {
+								for (int i = 0; i < lottoNums.length; i++) {
+									lottoNums[i].setSelected(selected);
+									lottoNums[i].setStatus(true);
+								}
+								for (int i = 0; i < inputLabels[fullRow].length; i++) {
+									String str = String.valueOf(inputNumList1.get(i));
+									inputLabels[fullRow][i].setText(str);
+								}
+								// 자동,수동,반자동 여부 결정
+								if (manualCount == 6 && autoCount == 0) {
+									statusLabels[fullRow].setText("수동");
+								} else if (autoCount == 6 && manualCount == 0) {
+									statusLabels[fullRow].setText("자동");
+								} else {
+									statusLabels[fullRow].setText("반자동");
+								}
+								inputNumList1.clear();
+								inputNumSet1.clear();
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "6개를 선택해주세요.");
+						}
+					} catch (NullPointerException exception) {
+						JOptionPane.showMessageDialog(null, "6개를 선택해주세요.");
+					} catch (ArrayIndexOutOfBoundsException exception) {
+						JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
+						inputNumList1.clear();
+						inputNumSet1.clear();
+					}
+				}
+				modifying = false;
+				fullRow = 0;
+				System.out.println(autoCount);
+				System.out.println(manualCount);
+				autoCount = 0;
+				manualCount = 0;
+			}
+		});
 	}
 
 	// 수동 메소드
@@ -416,7 +434,7 @@ public class MainFrame extends JFrame implements ActionListener {
 						inputNumSet1.add(Integer.parseInt(lottoNums[i].getText()));
 						lottoNums[i].setStatus(false);
 						manualCount++;
-						if (inputNumSet1.size() > 6) {
+						if (inputNumSet1.size() > 6 && !modifying) {
 							JOptionPane.showMessageDialog(null, "6자리 이상은 입력할 수 없습니다.");
 							inputNumSet1.remove(Integer.parseInt(lottoNums[i].getText()));
 							lottoNums[i].setSelected(!selected);
