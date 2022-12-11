@@ -1,12 +1,7 @@
 
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-import javax.swing.border.EmptyBorder;
-import javax.swing.AbstractButton;
-import javax.swing.JButton;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,10 +9,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.awt.event.ActionEvent;
-import java.awt.GridLayout;
+
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.border.EmptyBorder;
 
 class MyToggleButton extends JToggleButton {
 	private boolean status = true;
@@ -39,8 +39,8 @@ public class MainFrame extends JFrame implements ActionListener {
 	private MyToggleButton[] lottoNums = new MyToggleButton[45];
 	private JLabel[][] inputLabels = new JLabel[5][6];
 	private JLabel[] statusLabels = new JLabel[5];
+	private List[] resultArr = new ArrayList[5];
 	private int fullRow = 0;
-	private List<List> lists = new ArrayList<>();
 	private int autoCount = 0;
 	private int manualCount = 0;
 	private boolean modifying = false;
@@ -92,7 +92,7 @@ public class MainFrame extends JFrame implements ActionListener {
 				}
 				if (isAllRowFull(statusLabels) == 5 && !modifying) {
 					JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
-				}  else {
+				} else {
 					try {
 						if (inputNumList1.size() == 6) {
 							if (command.equals("확인")) {
@@ -105,14 +105,13 @@ public class MainFrame extends JFrame implements ActionListener {
 									inputLabels[fullRow][i].setText(str);
 								}
 								// 자동,수동,반자동 여부 결정
-								if (manualCount == 6) {
+								if (manualCount == 6 && autoCount == 0) {
 									statusLabels[fullRow].setText("수동");
-								} else if (autoCount == 6) {
+								} else if (autoCount == 6 && manualCount == 0) {
 									statusLabels[fullRow].setText("자동");
 								} else {
 									statusLabels[fullRow].setText("반자동");
 								}
-								lists.add(inputNumList1);
 								inputNumList1.clear();
 								inputNumSet1.clear();
 							}
@@ -129,8 +128,6 @@ public class MainFrame extends JFrame implements ActionListener {
 				}
 				modifying = false;
 				fullRow = 0;
-				System.out.println(autoCount);
-				System.out.println(manualCount);
 				autoCount = 0;
 				manualCount = 0;
 			}
@@ -197,7 +194,7 @@ public class MainFrame extends JFrame implements ActionListener {
 								int num = inputNumList1.get(i) - 1;
 								lottoNums[num].setSelected(!selected);
 								lottoNums[num].setStatus(false);
-								
+
 							}
 						}
 					}
@@ -206,16 +203,27 @@ public class MainFrame extends JFrame implements ActionListener {
 		});
 		randombtn.setBounds(146, 410, 88, 32);
 		left.add(randombtn);
-
-		JButton result = new JButton("결과 확인");
+		
+		JButton result = new JButton("구매 하기");
 		result.setBounds(199, 455, 100, 40);
 		right.add(result);
 		result.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// 다이얼 로그 호출하기
-//				JOptionPane.showMessageDialog(null, "강사님 임시 결과창입니다~ 참고바랍니다~!");
-//				Money frame = new Money();
+				int labelStr = 0;
+				for (int i = 0; i < inputLabels.length; i++) {
+					List<Integer> list = new ArrayList<>();
+					for (int j = 0; j < inputLabels[i].length; j++) {
+						labelStr = Integer.parseInt(inputLabels[i][j].getText());
+						list.add(labelStr);
+					}
+					resultArr[i] = new ArrayList<>(list);
+					System.out.println(resultArr[i]);
+				}
+//				 다이얼 로그 호출하기
+				JOptionPane.showMessageDialog(null, "강사님 임시 결과창입니다~ 참고바랍니다~!");
+				// 결과창에 선택된 번호값 넘겨주는 방법
+//				Money frame = new Money(resultArr[0], resultArr[1], resultArr[2], resultArr[3], resultArr[4], resultArr[5]);
 //				frame.setLocationRelativeTo(null);
 //				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 //				frame.setSize(400, 565);
@@ -259,7 +267,7 @@ public class MainFrame extends JFrame implements ActionListener {
 			changePanel.add(changeBtn[i]);
 
 			changeBtn[i].addActionListener(new ActionListener() {
-				
+
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					AbstractButton abstractButton = (AbstractButton) e.getSource();
