@@ -1,3 +1,4 @@
+package group4getLotto;
 
 import java.awt.EventQueue;
 import java.awt.GridLayout;
