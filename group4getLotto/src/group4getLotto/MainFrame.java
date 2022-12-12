@@ -111,11 +111,10 @@ public class MainFrame extends JFrame implements ActionListener {
 		randombtn.setBounds(146, 410, 88, 32);
 		left.add(randombtn);
 
-		JButton result = new JButton("구매 하기");
+		JButton result = new JButton("구매 하기 !");
 		result.setBounds(199, 455, 100, 40);
 		right.add(result);
 		resultButton(result);
-		
 
 		JPanel labelPanel = new JPanel();
 		labelPanel.setBounds(65, 122, 349, 297);
@@ -153,9 +152,9 @@ public class MainFrame extends JFrame implements ActionListener {
 			changePanel.add(changeBtn[i]);
 
 			changeBtn[i].addActionListener(new ActionListener() {
-
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					inputNumSet1.clear();
 					AbstractButton abstractButton = (AbstractButton) e.getSource();
 					boolean selected = abstractButton.getModel().isSelected();
 					for (int i = 0; i < lottoNums.length; i++) {
@@ -271,6 +270,7 @@ public class MainFrame extends JFrame implements ActionListener {
 						lottoNums[i].setSelected(selected);
 						lottoNums[i].setStatus(true);
 					}
+					modifying = false;
 					inputNumList1.clear();
 					inputNumSet1.clear();
 					autoCount = 0;
@@ -281,7 +281,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 
 	}
-	
+
 	public void resultButton(JButton result) {
 		result.addActionListener(new ActionListener() {
 			@Override
@@ -296,25 +296,24 @@ public class MainFrame extends JFrame implements ActionListener {
 					resultArr[i] = new ArrayList<>(list);
 					System.out.println(resultArr[i]);
 				}
-//				 다이얼 로그 호출하기
+//             다이얼 로그 호출하기
 				JOptionPane.showMessageDialog(null, "강사님 임시 결과창입니다~ 참고바랍니다~!");
 				// 결과창에 선택된 번호값 넘겨주는 방법
-//				Money frame = new Money(resultArr[0], resultArr[1], resultArr[2], resultArr[3], resultArr[4], resultArr[5]);
-//				frame.setLocationRelativeTo(null);
-//				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//				frame.setSize(400, 565);
-//				frame.setVisible(true);
+//            Money frame = new Money(resultArr[0], resultArr[1], resultArr[2], resultArr[3], resultArr[4], resultArr[5]);
+//            frame.setLocationRelativeTo(null);
+//            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//            frame.setSize(400, 565);
+//            frame.setVisible(true);
 			}
 		});
 	}
-	
+
 	public void autoButton(JButton randombtn) {
 		randombtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String command = e.getActionCommand();
 				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
-				
 				if (command.equals("자동")) {
 					if (isAllRowFull(statusLabels) == 5 && !modifying) {
 						JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
@@ -357,7 +356,7 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		});
 	}
-	
+
 	public void confirmButton(JButton select) {
 		select.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -371,6 +370,8 @@ public class MainFrame extends JFrame implements ActionListener {
 					JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
 				} else {
 					try {
+						inputNumList1 = new ArrayList<>(inputNumSet1);
+						Collections.sort(inputNumList1);
 						if (inputNumList1.size() == 6) {
 							if (command.equals("확인")) {
 								for (int i = 0; i < lottoNums.length; i++) {
@@ -389,6 +390,13 @@ public class MainFrame extends JFrame implements ActionListener {
 								} else {
 									statusLabels[fullRow].setText("반자동");
 								}
+								if (inputNumSet1.size() == 6) {
+									modifying = false;
+								} else {
+									fullRow = 0;
+									autoCount = 0;
+									manualCount = 0;
+								}
 								inputNumList1.clear();
 								inputNumSet1.clear();
 							}
@@ -403,12 +411,7 @@ public class MainFrame extends JFrame implements ActionListener {
 						inputNumSet1.clear();
 					}
 				}
-				modifying = false;
-				fullRow = 0;
-				System.out.println(autoCount);
-				System.out.println(manualCount);
-				autoCount = 0;
-				manualCount = 0;
+				
 			}
 		});
 	}
@@ -441,8 +444,13 @@ public class MainFrame extends JFrame implements ActionListener {
 							lottoNums[i].setStatus(true);
 							manualCount--;
 							break;
+						} else if (inputNumSet1.size() > 6 && modifying) {
+							JOptionPane.showMessageDialog(null, "6자리 이상은 입력할 수 없습니다.");
+							inputNumSet1.remove(Integer.parseInt(lottoNums[i].getText()));
+							lottoNums[i].setSelected(!selected);
+							lottoNums[i].setStatus(true);
+							manualCount--;
 						}
-
 					} else if (!lottoNums[i].isStatus()) {
 						lottoNums[i].setStatus(true);
 						inputNumSet1.remove(Integer.parseInt(lottoNums[i].getText()));
@@ -451,8 +459,6 @@ public class MainFrame extends JFrame implements ActionListener {
 				}
 			}
 		}
-		inputNumList1 = new ArrayList<>(inputNumSet1);
-		Collections.sort(inputNumList1);
 		if (manualCount < 0) {
 			manualCount = 0;
 		}
