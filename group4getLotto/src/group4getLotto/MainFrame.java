@@ -3,6 +3,7 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -293,17 +294,15 @@ public class MainFrame extends JFrame implements ActionListener {
 						labelStr = Integer.parseInt(inputLabels[i][j].getText());
 						list.add(labelStr);
 					}
-					resultArr[i] = new ArrayList<>(list);
-					System.out.println(resultArr[i]);
+					resultArr[i] = new ArrayList<Integer>(list);
 				}
 //             다이얼 로그 호출하기
 				JOptionPane.showMessageDialog(null, "강사님 임시 결과창입니다~ 참고바랍니다~!");
-				// 결과창에 선택된 번호값 넘겨주는 방법
-//            Money frame = new Money(resultArr[0], resultArr[1], resultArr[2], resultArr[3], resultArr[4], resultArr[5]);
-//            frame.setLocationRelativeTo(null);
-//            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//            frame.setSize(400, 565);
-//            frame.setVisible(true);
+				Money frame = new Money(resultArr[0], resultArr[1], resultArr[2], resultArr[3], resultArr[4]);
+				frame.setLocationRelativeTo(null);
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				frame.setSize(400, 565);
+				frame.setVisible(true);
 			}
 		});
 	}
@@ -411,7 +410,7 @@ public class MainFrame extends JFrame implements ActionListener {
 						inputNumSet1.clear();
 					}
 				}
-				
+
 			}
 		});
 	}
@@ -419,6 +418,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	// 수동 메소드
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		System.out.println(fullRow);
 		Object check = e.getSource();
 		AbstractButton abstractButton = (AbstractButton) e.getSource();
 		boolean selected = abstractButton.getModel().isSelected();
@@ -464,7 +464,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 	}
 
-	public static int falseCount(MyToggleButton[] arr) {
+	public int falseCount(MyToggleButton[] arr) {
 		int count = 0;
 		for (int i = 0; i < arr.length; i++) {
 			if (!arr[i].isStatus()) {
@@ -475,7 +475,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	}
 
 	// 상태값을 통해 비어있는 행에 도착할 수 있도록 해주는 메소드
-	public static int dicisionRowNum(JLabel[] Labels) {
+	public int dicisionRowNum(JLabel[] Labels) {
 		int count = 0;
 		for (int i = 0; i < Labels.length; i++) {
 			if (!Labels[i].getText().equals("상태")) {
@@ -488,7 +488,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	}
 
 	// 상태값을 통해 비어있는 행이 몇개인지 알려주는 메소드
-	public static int isAllRowFull(JLabel[] Labels) {
+	public int isAllRowFull(JLabel[] Labels) {
 		int count = 0;
 		for (int i = 0; i < Labels.length; i++) {
 			if (!Labels[i].getText().equals("상태")) {
@@ -497,4 +497,13 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		return count;
 	}
+
+//	public void resetMainFrame() {
+//		for (int i = 0; i < inputLabels.length; i++) {
+//			for (int j = 0; j < inputLabels[i].length; j++) {
+//				this.inputLabels[i][j].setText("0");
+//				System.out.println(inputLabels[i][j].getText());
+//			}
+//		}
+//	}
 }
