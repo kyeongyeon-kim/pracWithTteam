@@ -12,10 +12,9 @@ class Rank {
 	private int[] countMain; // 맞춘 개수(보너스 제외)
 	private int[] countBonus; // 보너스 맞춘 개수
 	private String[] rank; // 순위 
-	private int[] lottoMain = new int[6]; // 당첨번호(보너스 제외)
+	private int[] lottoMain; // 당첨번호(보너스 제외)
 	private int lottoBonus; // 당첨번호(보너스) 
 	private int money; // 총 당첨금
-	private List<int[]> list = new ArrayList<>();
 	
 	public int getMoney() {
 		return money;
@@ -66,58 +65,29 @@ class Rank {
 	}
 
 	
-	public void startMethod(List<int[]> list) {
-		countMain = new int[list.size()]; // 맞춘 개수(보너스 제외)
-		countBonus = new int[list.size()]; // 보너스 맞춘 개수
-		rank = new String[list.size()]; // 순위 
-		
+	
+	public Rank(List[] listInt){
+		countMain = new int[5]; // 맞춘 개수(보너스 제외)
+		countBonus = new int[5]; // 보너스 맞춘 개수
+		rank = new String[5]; // 순위 
 		LottoNumber lottoNumber = new LottoNumber();
 		
 		lottoBonus = lottoNumber.getBonusNumber();
-		Iterator set2 = lottoNumber.getSet().iterator();
-		int c = 0;
-		while(set2.hasNext()) {
-			lottoMain[c] = (int) set2.next();
-			c++;
-		}
+		lottoMain = lottoNumber.getIntList();
 		
-		for (int i = 0; i < list.size(); i++) {
-			countMain[i] = rankMain(list.get(i), lottoNumber);
-			countBonus[i] = rankBonus(list.get(i), lottoNumber);
-			
+		for (int i = 0; i < 5; i++) {
+			countMain[i] = rankMain(listInt[i]);
+			countBonus[i] = rankBonus(listInt[i], lottoNumber);
 		}
+		rankNumber(); // + 당첨번호 오름차순 정리
 		
 	}
 	
-	public Rank(List<List<Integer>> listInt) {
-		for (int i = 0; i < listInt.size(); i++) {
-			int[] list_ = new int[6];
-			for (int j = 0; j < 6; j++) {
-				list_[j] = listInt.get(i).get(j);
-			}
-			list.add(list_);
-		}
-		startMethod(list);
-		rankNumber(list.size()); // + 당첨번호 오름차순 정리
-		
-	}
-	
-	public Rank(int[]... listInt){
-		for (int i = 0; i < listInt.length; i++) {
-			list.add(listInt[i]);
-		}
-		startMethod(list);
-		rankNumber(list.size()); // + 당첨번호 오름차순 정리
-		
-	}
-	
-	public int rankMain(int[] list, LottoNumber lottoNumber) {
-		Iterator<Integer> set2 = lottoNumber.getSet().iterator(); 
+	public int rankMain(List list) {
 		int number = 0;
-		while (set2.hasNext()) {
-			int a = (int) set2.next();
+		for (int j = 0; j < 6; j++) {
 			for (int i = 0; i < 6; i++) {
-				if (list[i] == a) {
+				if ((int) list.get(i) == lottoMain[j]) {
 					number++;
 				}
 			}
@@ -125,10 +95,10 @@ class Rank {
 		return number;
 	}
 	
-	public void rankNumber(int num) { // + 당첨번호 오름차순 정리
+	public void rankNumber() { // + 당첨번호 오름차순 정리
 		Arrays.sort(lottoMain);
 		
-		for (int i = 0; i < num; i++) { // 순위 채우기
+		for (int i = 0; i < 5; i++) { // 순위 채우기
 			switch (countMain[i]) {
 				case 3:
 					rank[i] = "5등";
@@ -159,10 +129,10 @@ class Rank {
 		
 	}
 	
-	public int rankBonus(int[] list, LottoNumber lottoNumber) {
+	public int rankBonus(List list, LottoNumber lottoNumber) {
 		int bonus = 0;
 		for (int i = 0; i < 6; i++) {
-			if (lottoNumber.getBonusNumber() == list[i]) {
+			if (lottoNumber.getBonusNumber() == (int) list.get(i)) {
 				bonus++;
 			}
 		}
@@ -173,7 +143,7 @@ class Rank {
 
 class LottoNumber {
 	private int bonusNumber;
-	private Set<Integer> set;
+	private int[] intList;
 	
 	public int getBonusNumber() {
 		return bonusNumber;
@@ -183,48 +153,54 @@ class LottoNumber {
 		this.bonusNumber = bonusNumber;
 	}
 
-	public Set<Integer> getSet() {
-		return set;
+	public int[] getIntList() {
+		return intList;
 	}
 
-	public void setSet(Set<Integer> set) {
-		this.set = set;
+	public void setIntList(int[] intList) {
+		this.intList = intList;
 	}
 
 	public LottoNumber() {
 		Random random = new Random();
 		int num;
+		intList = new int[6];
 		
-		set = new HashSet<>();
-		Iterator<Integer> set2;
-		while(true) {		num = random.nextInt(45) + 1;
-			set2 = set.iterator();
+		for (int j = 0; j < 6; j++) {
+			num = random.nextInt(45) + 1;
 			boolean sw = true;
-			while(set2.hasNext()) {
-				if(set2.next() == num) {
+			for (int i = 0; i < 6; i++) {
+				if (intList[i] == num) {
 					sw = false;
 				}
 			}
 			if (sw) {
-				set.add(num);
-			}
-			if (set.size() == 6) {
-				break;
+				intList[j] = num;
+			} else {
+				j--;
 			}
 		}
-		num = 0;
-		set2 = set.iterator();
-		while (set2.hasNext()) {
+		
+		bonusNumber = 0;
+		while (true) {
 			num = random.nextInt(45) + 1;
+			
 			boolean sw = true;
-			if (set2.next() == num) {
-				sw = false;
+			for (int i = 0; i < 6; i++) {
+				if (intList[i] == num) {
+					sw = false;
+				}
 			}
 			if (sw) {
 				bonusNumber = num;
+			}
+			if (bonusNumber > 0) {
 				break;
 			}
+			
 		}
+		
+		
 	}
 	
 }
