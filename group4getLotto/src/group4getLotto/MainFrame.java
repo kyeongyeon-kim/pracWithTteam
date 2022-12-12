@@ -298,11 +298,11 @@ public class MainFrame extends JFrame implements ActionListener {
 				}
 //             다이얼 로그 호출하기
 				JOptionPane.showMessageDialog(null, "강사님 임시 결과창입니다~ 참고바랍니다~!");
-				Money frame = new Money(resultArr[0], resultArr[1], resultArr[2], resultArr[3], resultArr[4]);
-				frame.setLocationRelativeTo(null);
-				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				frame.setSize(400, 565);
-				frame.setVisible(true);
+//				Money frame = new Money(resultArr[0], resultArr[1], resultArr[2], resultArr[3], resultArr[4]);
+//				frame.setLocationRelativeTo(null);
+//				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//				frame.setSize(400, 565);
+//				frame.setVisible(true);
 			}
 		});
 	}
@@ -315,11 +315,11 @@ public class MainFrame extends JFrame implements ActionListener {
 				boolean selected = abstractButton.getModel().isSelected();
 				if (command.equals("자동")) {
 					if (isAllRowFull(statusLabels) == 5 && !modifying) {
-						JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
+						//JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
 						inputNumList1.clear();
 						inputNumSet1.clear();
 					} else if (inputNumSet1.size() == 6) {
-						JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
+						//JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.2");
 					} else {
 						if (inputNumSet1.size() == 0) {
 							while (inputNumSet1.size() < 6) {
@@ -366,7 +366,7 @@ public class MainFrame extends JFrame implements ActionListener {
 					fullRow = dicisionRowNum(statusLabels);
 				}
 				if (isAllRowFull(statusLabels) == 5 && !modifying) {
-					JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
+					JOptionPane.showMessageDialog(null, "1회 최대 5개만 구매할 수 있습니다.");
 				} else {
 					try {
 						inputNumList1 = new ArrayList<>(inputNumSet1);
@@ -400,12 +400,12 @@ public class MainFrame extends JFrame implements ActionListener {
 								inputNumSet1.clear();
 							}
 						} else {
-							JOptionPane.showMessageDialog(null, "6개를 선택해주세요.");
+							JOptionPane.showMessageDialog(null, "번호 6개를 선택해주세요.");
 						}
 					} catch (NullPointerException exception) {
 						JOptionPane.showMessageDialog(null, "6개를 선택해주세요.");
 					} catch (ArrayIndexOutOfBoundsException exception) {
-						JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
+						//JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
 						inputNumList1.clear();
 						inputNumSet1.clear();
 					}
@@ -423,7 +423,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		AbstractButton abstractButton = (AbstractButton) e.getSource();
 		boolean selected = abstractButton.getModel().isSelected();
 		if (isAllRowFull(statusLabels) == 5 && !modifying) {
-			JOptionPane.showMessageDialog(null, "모든번호가 선택되었습니다.");
+			//JOptionPane.showMessageDialog(null, "모든번호가 선택되었습니다.");
 			for (int i = 0; i < lottoNums.length; i++) {
 				if (check == lottoNums[i]) {
 					lottoNums[i].setSelected(!selected);
@@ -438,14 +438,12 @@ public class MainFrame extends JFrame implements ActionListener {
 						lottoNums[i].setStatus(false);
 						manualCount++;
 						if (inputNumSet1.size() > 6 && !modifying) {
-							JOptionPane.showMessageDialog(null, "6자리 이상은 입력할 수 없습니다.");
 							inputNumSet1.remove(Integer.parseInt(lottoNums[i].getText()));
 							lottoNums[i].setSelected(!selected);
 							lottoNums[i].setStatus(true);
 							manualCount--;
 							break;
 						} else if (inputNumSet1.size() > 6 && modifying) {
-							JOptionPane.showMessageDialog(null, "6자리 이상은 입력할 수 없습니다.");
 							inputNumSet1.remove(Integer.parseInt(lottoNums[i].getText()));
 							lottoNums[i].setSelected(!selected);
 							lottoNums[i].setStatus(true);
