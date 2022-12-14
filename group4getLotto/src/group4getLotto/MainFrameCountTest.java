@@ -30,21 +30,6 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-class ToggleButton extends JToggleButton {
-	private boolean status = true;
-
-	public ToggleButton(ImageIcon convertToNumber) {
-		setIcon(convertToNumber);
-	}
-
-	public boolean isStatus() {
-		return status;
-	}
-
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-}
 
 class SaveCount{
 	private int[] lottoMainSave = new int[6];
