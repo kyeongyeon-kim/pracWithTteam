@@ -44,6 +44,7 @@ class ToggleButton extends JToggleButton {
 }
 
 public class MainFrame extends JFrame implements ActionListener {
+	public static final String LINK = "/images";
 	private Random random = new Random();
 	private JPanel contentPane;
 	private Set<Integer> inputNumSet1 = new HashSet<>();
@@ -64,7 +65,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	private int quantityIntNum;
 	private boolean autoMode = false;
 	private int printAutoMode;
-
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -78,7 +79,7 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		});
 	}
-
+	
 	// 이미지 넣기 메소드
 	public ImageIcon convertToNumber(String name, int width, int height) {
 		String imageName = name;
@@ -96,7 +97,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
 		// 백그라운드 이미지
 		Toolkit tk = Toolkit.getDefaultToolkit();
-		img = tk.getImage("background.png");
+		img = tk.getImage(MainFrame.LINK + "/background.png");
 
 		contentPane = new JPanel() {
 			@Override
@@ -165,11 +166,11 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		// 토글버튼 45개 만들어서 생성하고 버튼 패널에 add하고 GridLayout 사용해서 정리하고 출력ImageIcon iconSet;
 		ImageIcon iconSet;
-		ImageIcon iconYellow = new ImageIcon("y.png");
-		ImageIcon iconBlue = new ImageIcon("b.png");
-		ImageIcon iconRed = new ImageIcon("r.png");
-		ImageIcon iconGray = new ImageIcon("g.png");
-		ImageIcon iconGreen = new ImageIcon("green.png");
+		ImageIcon iconYellow = new ImageIcon(MainFrame.LINK + "/y.png");
+		ImageIcon iconBlue = new ImageIcon(MainFrame.LINK + "/b.png");
+		ImageIcon iconRed = new ImageIcon(MainFrame.LINK + "/r.png");
+		ImageIcon iconGray = new ImageIcon(MainFrame.LINK + "/g.png");
+		ImageIcon iconGreen = new ImageIcon(MainFrame.LINK + "/gr.png");
 
 		for (int i = 0; i < 45; i++) {
 			if (i < 10) {
@@ -195,13 +196,6 @@ public class MainFrame extends JFrame implements ActionListener {
 			lottoNums[i].setOpaque(false);
 			lottoNums[i].setBorderPainted(false);
 		}
-
-//      JPanel panel_5 = new JPanel();
-//      panel_5.setBounds(12, 452, 322, 79);
-//      left.add(panel_5);
-//
-//      JLabel rule = new JLabel("대충 사용법 설명서(필요없을지도?)");
-//      panel_5.add(rule);
 
 		// 오른쪽 패널
 		JPanel right = new JPanel();
@@ -293,11 +287,23 @@ public class MainFrame extends JFrame implements ActionListener {
 		lblNewLabel_1.setFont(new Font("굴림", Font.PLAIN, 14));
 		lblNewLabel_1.setBounds(60, 447, 78, 33);
 		main.add(lblNewLabel_1);
+		
+		// 설명서버튼
+		JButton manualBtn = new JButton("설명");
+		manualBtn.setBounds(12, 217, 63, 64);
+		main.add(manualBtn);
+		manualBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new ManualDialog();
+			}
+		});
 
 		// 수정버튼
 		JButton[] changeBtn = new JButton[5];
 		for (int i = 0; i < 5; i++) {
-			changeBtn[i] = new JButton(new ImageIcon("102.png"));
+			changeBtn[i] = new JButton(new ImageIcon(MainFrame.LINK + "/102.png"));
 			changePanel.add(changeBtn[i]);
 			changeBtn[i].setBackground(new Color(255, 0, 0, 0));
 			changeBtn[i].setOpaque(false);
@@ -379,7 +385,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		// 리셋버튼
 		JButton[] removeBtn = new JButton[5];
 		for (int i = 0; i < 5; i++) {
-			removeBtn[i] = new JButton(new ImageIcon("101.png"));
+			removeBtn[i] = new JButton(new ImageIcon(MainFrame.LINK + "101.png"));
 			removePanel.add(removeBtn[i]);
 			removeBtn[i].setOpaque(false);
 			removeBtn[i].setBorderPainted(false);
@@ -613,6 +619,7 @@ public class MainFrame extends JFrame implements ActionListener {
 				}
 			}
 		} else {
+			
 			for (int i = 0; i < lottoNums.length; i++) {
 				if (check == lottoNums[i]) {
 					if (lottoNums[i].isStatus()) {
