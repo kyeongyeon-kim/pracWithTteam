@@ -82,15 +82,15 @@ public class Money extends JDialog {
               if (ran.getLottoMain()[i] > 0) {
             	  
                  if ((int) ran.getLottoMain()[i] <= 10) {
-                    aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/y.png"));
+                    aImg = new ImageIcon(Money.class.getResource("/y.png"));
                  } else if ((int) ran.getLottoMain()[i] <= 20 ) {
-                    aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/b.png"));
+                    aImg = new ImageIcon(Money.class.getResource("/b.png"));
                  } else if ((int) ran.getLottoMain()[i] <= 30 ) {
-                    aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/r.png"));
+                    aImg = new ImageIcon(Money.class.getResource("/r.png"));
                  } else if ((int) ran.getLottoMain()[i] <= 40 ) {
-                    aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/g.png"));
+                    aImg = new ImageIcon(Money.class.getResource("/g.png"));
                  } else if ((int) ran.getLottoMain()[i] <= 45 )  {
-                    aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/gr.png"));
+                    aImg = new ImageIcon(Money.class.getResource("/gr.png"));
                  }
               }
               random[i][j] = new JLabel(String.valueOf(ran.getLottoMain()[i]));
@@ -102,15 +102,15 @@ public class Money extends JDialog {
               ImageIcon aImg = new ImageIcon();
               if (ran.getLottoBonus() > 0) {
                  if ((int) ran.getLottoBonus() <= 10) {
-                    aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/y.png"));
+                    aImg = new ImageIcon(Money.class.getResource("/y.png"));
                  } else if ((int) ran.getLottoBonus() <= 20 ) {
-                    aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/b.png"));
+                    aImg = new ImageIcon(Money.class.getResource("/b.png"));
                  } else if ((int) ran.getLottoBonus() <= 30 ) {
-                    aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/r.png"));
+                    aImg = new ImageIcon(Money.class.getResource("/r.png"));
                  } else if ((int) ran.getLottoBonus() <= 40 ) {
-                    aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/g.png"));
+                    aImg = new ImageIcon(Money.class.getResource("/g.png"));
                  } else if ((int) ran.getLottoBonus() <= 45 )  {
-                    aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/gr.png"));
+                    aImg = new ImageIcon(Money.class.getResource("/gr.png"));
                  }
               }
                 Image bImg = aImg.getImage();  
@@ -217,19 +217,19 @@ public class Money extends JDialog {
                   ImageIcon aImg = new ImageIcon();
                   if (ran.getLottoMain()[g] == (int) list_[i].get(j) || ran.getLottoBonus() == (int) list_[i].get(j)) {
                     if ((int) list_[i].get(j) <= 10) {
-                       aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/y.png"));
+                       aImg = new ImageIcon(Money.class.getResource("/y.png"));
                        okNumberlbl[i][j].setForeground(Color.WHITE);
                     } else if ((int) list_[i].get(j) <= 20 ) {
-                       aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/b.png"));
+                       aImg = new ImageIcon(Money.class.getResource("/b.png"));
                        okNumberlbl[i][j].setForeground(Color.WHITE);
                     } else if ((int) list_[i].get(j) <= 30 ) {
-                       aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/r.png"));
+                       aImg = new ImageIcon(Money.class.getResource("/r.png"));
                        okNumberlbl[i][j].setForeground(Color.WHITE);
                     } else if ((int) list_[i].get(j) <= 40 ) {
-                       aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/g.png"));
+                       aImg = new ImageIcon(Money.class.getResource("/g.png"));
                        okNumberlbl[i][j].setForeground(Color.WHITE);
                     } else {
-                       aImg = new ImageIcon(Money.class.getResource(MainFrame.LINK + "/gr.png"));
+                       aImg = new ImageIcon(Money.class.getResource("gr.png"));
                        okNumberlbl[i][j].setForeground(Color.WHITE);
                     }
                     Image bImg = aImg.getImage();
@@ -278,7 +278,7 @@ public class Money extends JDialog {
       
       
       JLabel baseLabel = new JLabel();
-      baseLabel.setIcon(new ImageIcon(Money.class.getResource(MainFrame.LINK + "/background2.png")));
+      baseLabel.setIcon(new ImageIcon(Money.class.getResource("/background2.png")));
       baseLabel.setBounds(0, 0, 400, 565);
       backgroud2.add(baseLabel);
       
