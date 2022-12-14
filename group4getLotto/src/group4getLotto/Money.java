@@ -89,7 +89,7 @@ public class Money extends JDialog {
                  } else if ((int) ran.getLottoMain()[i] <= 40 ) {
                     aImg = new ImageIcon(Money.class.getResource("/inputColor/g.png"));
                  } else if ((int) ran.getLottoMain()[i] <= 45 )  {
-                    aImg = new ImageIcon(Money.class.getResource("/inputColor/gr.png"));
+                    aImg = new ImageIcon(Money.class.getResource("/inputColor/green.png"));
                  }
               }
               random[i][j] = new JLabel(String.valueOf(ran.getLottoMain()[i]));
