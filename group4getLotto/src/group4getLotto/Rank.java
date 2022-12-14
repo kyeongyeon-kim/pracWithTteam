@@ -1,5 +1,3 @@
-package group4getLotto;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
