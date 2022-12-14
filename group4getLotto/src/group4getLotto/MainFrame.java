@@ -72,6 +72,8 @@ public class MainFrame extends JFrame implements ActionListener {
 	private ImageIcon iconGray;
 	private ImageIcon iconGreen;
 	private ImageIcon iconSet2;
+	private JButton[] changeBtns;
+	private JButton[] removeBtns;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -312,15 +314,14 @@ public class MainFrame extends JFrame implements ActionListener {
 		lblNewLabel_1.setBounds(60, 447, 78, 33);
 		main.add(lblNewLabel_1);
 
-		// 수정버튼
-		JButton[] changeBtn = new JButton[5];
+		changeBtns = new JButton[5];
 		for (int i = 0; i < 5; i++) {
-			changeBtn[i] = new JButton(new ImageIcon("remove.png"));
-			changePanel.add(changeBtn[i]);
-			changeBtn[i].setBackground(new Color(255, 0, 0, 0));
-			changeBtn[i].setOpaque(false);
-			changeBtn[i].setBorderPainted(false);
-			changeBtn[i].addActionListener(new ActionListener() {
+			changeBtns[i] = new JButton(new ImageIcon("remove.png"));
+			changePanel.add(changeBtns[i]);
+			changeBtns[i].setBackground(new Color(255, 0, 0, 0));
+			changeBtns[i].setOpaque(false);
+			changeBtns[i].setBorderPainted(false);
+			changeBtns[i].addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					inputNumSet1.clear();
@@ -330,10 +331,11 @@ public class MainFrame extends JFrame implements ActionListener {
 						if (!lottoNums[i].isStatus()) {
 							lottoNums[i].setSelected(selected);
 							lottoNums[i].setStatus(true);
+							 changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 						}
 					}
 					try {
-						if (changeBtn[0] == e.getSource()) {
+						if (changeBtns[0] == e.getSource()) {
 							fullRow = 0;
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
@@ -342,9 +344,10 @@ public class MainFrame extends JFrame implements ActionListener {
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
 								lottoNums[labelStr - 1].setStatus(false);
+								changeBtns[fullRow].setIcon(new ImageIcon("resetR.png"));
 							}
 
-						} else if (changeBtn[1] == e.getSource()) {
+						} else if (changeBtns[1] == e.getSource()) {
 							fullRow = 1;
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
@@ -353,8 +356,9 @@ public class MainFrame extends JFrame implements ActionListener {
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
 								lottoNums[labelStr - 1].setStatus(false);
+								changeBtns[fullRow].setIcon(new ImageIcon("resetR.png"));
 							}
-						} else if (changeBtn[2] == e.getSource()) {
+						} else if (changeBtns[2] == e.getSource()) {
 							fullRow = 2;
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
@@ -363,8 +367,9 @@ public class MainFrame extends JFrame implements ActionListener {
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
 								lottoNums[labelStr - 1].setStatus(false);
+								changeBtns[fullRow].setIcon(new ImageIcon("resetR.png"));
 							}
-						} else if (changeBtn[3] == e.getSource()) {
+						} else if (changeBtns[3] == e.getSource()) {
 							fullRow = 3;
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
@@ -373,8 +378,9 @@ public class MainFrame extends JFrame implements ActionListener {
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
 								lottoNums[labelStr - 1].setStatus(false);
+								changeBtns[fullRow].setIcon(new ImageIcon("resetR.png"));
 							}
-						} else if (changeBtn[4] == e.getSource()) {
+						} else if (changeBtns[4] == e.getSource()) {
 							fullRow = 4;
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
@@ -383,6 +389,7 @@ public class MainFrame extends JFrame implements ActionListener {
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
 								lottoNums[labelStr - 1].setStatus(false);
+								changeBtns[fullRow].setIcon(new ImageIcon("resetR.png"));
 							}
 						}
 					} catch (ArrayIndexOutOfBoundsException e2) {
@@ -394,48 +401,57 @@ public class MainFrame extends JFrame implements ActionListener {
 			});
 		}
 
-		// 리셋버튼
-		JButton[] removeBtn = new JButton[5];
+		removeBtns = new JButton[5];
 		for (int i = 0; i < 5; i++) {
-			removeBtn[i] = new JButton(new ImageIcon("reset.png"));
-			removePanel.add(removeBtn[i]);
-			removeBtn[i].setOpaque(false);
-			removeBtn[i].setBorderPainted(false);
-			removeBtn[i].setBackground(new Color(255, 0, 0, 0));
-			removeBtn[i].addActionListener(new ActionListener() {
+			removeBtns[i] = new JButton(new ImageIcon("reset.png"));
+			removePanel.add(removeBtns[i]);
+			removeBtns[i].setOpaque(false);
+			removeBtns[i].setBorderPainted(false);
+			removeBtns[i].setBackground(new Color(255, 0, 0, 0));
+			removeBtns[i].addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					AbstractButton abstractButton = (AbstractButton) e.getSource();
 					boolean selected = abstractButton.getModel().isSelected();
 					try {
-						if (removeBtn[0] == e.getSource()) {
+						if (removeBtns[0] == e.getSource()) {
 							for (int j = 0; j <= inputLabels.length; j++) {
 								inputLabels[0][j].setText("0");
+								inputLabels[0][j].setForeground(Color.BLACK);
 								inputLabels[0][j].setIcon(new ImageIcon());
+								changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 								statusLabels[0].setText("상태");
 							}
-						} else if (removeBtn[1] == e.getSource()) {
+						} else if (removeBtns[1] == e.getSource()) {
 							for (int j = 0; j <= inputLabels.length; j++) {
 								inputLabels[1][j].setText("0");
+								inputLabels[1][j].setForeground(Color.BLACK);
 								inputLabels[1][j].setIcon(new ImageIcon());
+								changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 								statusLabels[1].setText("상태");
 							}
-						} else if (removeBtn[2] == e.getSource()) {
+						} else if (removeBtns[2] == e.getSource()) {
 							for (int j = 0; j <= inputLabels.length; j++) {
 								inputLabels[2][j].setText("0");
+								inputLabels[2][j].setForeground(Color.BLACK);
 								inputLabels[2][j].setIcon(new ImageIcon());
+								changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 								statusLabels[2].setText("상태");
 							}
-						} else if (removeBtn[3] == e.getSource()) {
+						} else if (removeBtns[3] == e.getSource()) {
 							for (int j = 0; j <= inputLabels.length; j++) {
 								inputLabels[3][j].setText("0");
+								inputLabels[3][j].setForeground(Color.BLACK);
 								inputLabels[3][j].setIcon(new ImageIcon());
+								changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 								statusLabels[3].setText("상태");
 							}
-						} else if (removeBtn[4] == e.getSource()) {
+						} else if (removeBtns[4] == e.getSource()) {
 							for (int j = 0; j <= inputLabels.length; j++) {
 								inputLabels[4][j].setText("0");
+								inputLabels[4][j].setForeground(Color.BLACK);
 								inputLabels[4][j].setIcon(new ImageIcon());
+								changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 								statusLabels[4].setText("상태");
 							}
 						}
@@ -578,6 +594,7 @@ public class MainFrame extends JFrame implements ActionListener {
 						if (inputNumList1.size() == 6) {
 							if (command.equals("확인")) {
 								for (int i = 0; i < lottoNums.length; i++) {
+									changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 									lottoNums[i].setSelected(selected);
 									lottoNums[i].setStatus(true);
 								}
