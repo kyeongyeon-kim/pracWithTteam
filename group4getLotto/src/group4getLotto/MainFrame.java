@@ -633,7 +633,6 @@ public class MainFrame extends JFrame implements ActionListener {
 				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
 				if (selected) {
-					
 					if (isAllRowFull(statusLabels) == 5 && !modifying) {
 						inputNumList1.clear();
 						inputNumSet1.clear();
@@ -802,7 +801,9 @@ public class MainFrame extends JFrame implements ActionListener {
 			for (int i = 0; i < lottoNums.length; i++) {
 				if (check == lottoNums[i]) {
 					if (lottoNums[i].isStatus()) {
-						showSlectedRow.setText(alphabets[dicisionRowNum(statusLabels)]);
+						if (!modifying) {
+							showSlectedRow.setText(alphabets[dicisionRowNum(statusLabels)]);
+						}
 						inputNumSet1.add(Integer.parseInt(lottoNums[i].getText()));
 						lottoNums[i].setStatus(false);
 						lottoNums[i].setBtnStatus(1);
