@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.color.ColorSpace;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -27,20 +28,43 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-class ToggleButton extends JToggleButton {
-	private boolean status = true;
+class MyToggleButton extends JToggleButton {
+	private boolean printStatus = true;
+	private int btnStatus = 0; // 0 안눌러진 상태 /1 수동/-1 자동
+	private Color bg;
 
-	public ToggleButton(ImageIcon convertToNumber) {
+	public MyToggleButton(ImageIcon convertToNumber) {
 		setIcon(convertToNumber);
 	}
 
 	public boolean isStatus() {
-		return status;
+		return printStatus;
+	}
+
+	public int getBtnStatus() {
+		return btnStatus;
+	}
+
+	public void setBtnStatus(int pressManual) {
+		this.btnStatus = pressManual;
 	}
 
 	public void setStatus(boolean status) {
-		this.status = status;
+		this.printStatus = status;
 	}
+}
+
+class MyLabel extends JLabel {
+	private int btnStatus2 = 0;
+
+	public int getBtnStatus2() {
+		return btnStatus2;
+	}
+
+	public void setBtnStatus2(int btnStatus2) {
+		this.btnStatus2 = btnStatus2;
+	}
+
 }
 
 public class MainFrame extends JFrame implements ActionListener {
@@ -49,22 +73,18 @@ public class MainFrame extends JFrame implements ActionListener {
 	private JPanel contentPane;
 	private Set<Integer> inputNumSet1 = new HashSet<>();
 	private List<Integer> inputNumList1;
-	private ToggleButton[] lottoNums = new ToggleButton[45];
-	private JLabel[][] inputLabels = new JLabel[5][6];
+	private MyToggleButton[] lottoNums = new MyToggleButton[45];
+	private MyLabel[][] inputLabels = new MyLabel[5][6];
 	private JLabel[] statusLabels = new JLabel[5];
 	private JLabel[] abcdeLabels = new JLabel[5];
 	private List[] resultArr = new ArrayList[5];
-	private int fullRow = 0;
-	private int manualCount = 0;
+	private int rowNum = 0;
 	private boolean modifying = false;
 	private ClassLoader classLoader;
 	private Image image;
 	private ImageIcon icon;
 	private Image img;
 	private JToggleButton randombtn;
-	private int quantityIntNum;
-	private boolean autoMode = false;
-	private int printAutoMode;
 	private ImageIcon iconYellow;
 	private Image updateImg;
 	private ImageIcon iconBlue;
@@ -72,6 +92,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	private ImageIcon iconGray;
 	private ImageIcon iconGreen;
 	private ImageIcon iconSet2;
+	private Image imageSet2;
 	private JButton[] changeBtns;
 	private JButton[] removeBtns;
 
@@ -132,18 +153,23 @@ public class MainFrame extends JFrame implements ActionListener {
 		main.setLayout(null);
 		main.setOpaque(false);
 
-		// 혼합, 자동 선택 토글버튼
-		ButtonGroup group = new ButtonGroup();
-		JToggleButton mix = new JToggleButton("미");
+		// 전적확인버튼 (작업중)
+		JButton mix = new JButton("미");
 		mix.setSelected(true);
 		mix.setBounds(12, 69, 63, 64);
 		main.add(mix);
 
-		JToggleButton mixRandom = new JToggleButton("구현");
-		mixRandom.setBounds(12, 143, 63, 64);
-		main.add(mixRandom);
-		group.add(mix);
-		group.add(mixRandom);
+		// 설명서버튼
+		JButton manualBtn = new JButton("설명");
+		manualBtn.setBounds(12, 143, 63, 64);
+		main.add(manualBtn);
+		manualBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new ManualDialog();
+			}
+		});
 
 		// 버튼 패널
 		JPanel BtnPanel = new JPanel();
@@ -193,9 +219,10 @@ public class MainFrame extends JFrame implements ActionListener {
 			} else {
 				iconSet = iconGreen;
 			}
+
 			Image imageSet = iconSet.getImage();
 			updateImg = imageSet.getScaledInstance(31, 31, Image.SCALE_SMOOTH);
-			lottoNums[i] = new ToggleButton(new ImageIcon(updateImg));
+			lottoNums[i] = new MyToggleButton(new ImageIcon(updateImg));
 			lottoNums[i].setText(String.format("%02d", i + 1));
 			lottoNums[i].setIconTextGap(-22);
 			BtnPanel.add(lottoNums[i]);
@@ -204,14 +231,8 @@ public class MainFrame extends JFrame implements ActionListener {
 			lottoNums[i].addActionListener(this);
 			lottoNums[i].setOpaque(false);
 			lottoNums[i].setBorderPainted(false);
+			lottoNums[i].setSelectedIcon(new ImageIcon("black2.png"));
 		}
-
-//      JPanel panel_5 = new JPanel();
-//      panel_5.setBounds(12, 452, 322, 79);
-//      left.add(panel_5);
-//
-//      JLabel rule = new JLabel("대충 사용법 설명서(필요없을지도?)");
-//      panel_5.add(rule);
 
 		// 오른쪽 패널
 		JPanel right = new JPanel();
@@ -234,7 +255,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
 		// 구매 버튼
 		JButton result = new JButton("구매 하기 !");
-		result.setBounds(620, 429, 100, 40);
+		result.setBounds(603, 429, 100, 40);
 		main.add(result);
 		resultButton(result);
 		result.setBackground(new Color(255, 0, 0, 0));
@@ -248,7 +269,8 @@ public class MainFrame extends JFrame implements ActionListener {
 		labelPanel.setLayout(new GridLayout(0, 6, 0, 0));
 		for (int i = 0; i < inputLabels.length; i++) {
 			for (int j = 0; j < inputLabels[i].length; j++) {
-				inputLabels[i][j] = new JLabel("0");
+				inputLabels[i][j] = new MyLabel();
+				inputLabels[i][j].setText("0");
 				labelPanel.add(inputLabels[i][j]);
 			}
 		}
@@ -266,7 +288,6 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 
 		// 수정 패널
-
 		JPanel changePanel = new JPanel();
 		changePanel.setLayout(new GridLayout(0, 1, 0, 0));
 		main.add(changePanel);
@@ -296,24 +317,26 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		});
 
-		// 설명서버튼
-		JButton manualBtn = new JButton("설명");
-		manualBtn.setBounds(12, 217, 63, 64);
-		main.add(manualBtn);
-		manualBtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new ManualDialog();
-			}
-		});
-
 		JLabel lblNewLabel_1 = new JLabel("적용 수량");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setFont(new Font("굴림", Font.PLAIN, 14));
+		lblNewLabel_1.setFont(new Font("굴림", Font.BOLD, 14));
 		lblNewLabel_1.setBounds(60, 447, 78, 33);
 		main.add(lblNewLabel_1);
 
+		JButton close = new JButton("종료");
+		close.setOpaque(false);
+		close.setBackground(new Color(255, 0, 0, 0));
+		close.setBounds(848, 491, 100, 40);
+		close.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		main.add(close);
+
+		// 수정버튼 메소드
 		changeBtns = new JButton[5];
 		for (int i = 0; i < 5; i++) {
 			changeBtns[i] = new JButton(new ImageIcon("remove.png"));
@@ -324,83 +347,88 @@ public class MainFrame extends JFrame implements ActionListener {
 			changeBtns[i].addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					inputNumSet1.clear();
 					AbstractButton abstractButton = (AbstractButton) e.getSource();
 					boolean selected = abstractButton.getModel().isSelected();
+					modifying = true;
+					inputNumSet1.clear();
 					for (int i = 0; i < lottoNums.length; i++) {
 						if (!lottoNums[i].isStatus()) {
 							lottoNums[i].setSelected(selected);
 							lottoNums[i].setStatus(true);
-							 changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
+							changeBtns[rowNum].setIcon(new ImageIcon("remove.png"));
 						}
 					}
 					try {
 						if (changeBtns[0] == e.getSource()) {
-							fullRow = 0;
+							rowNum = 0;
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
-								labelStr = Integer.parseInt(inputLabels[fullRow][j].getText());
+								labelStr = Integer.parseInt(inputLabels[rowNum][j].getText());
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
 								lottoNums[labelStr - 1].setStatus(false);
-								changeBtns[fullRow].setIcon(new ImageIcon("resetR.png"));
+								changeBtns[rowNum].setIcon(new ImageIcon("resetR.png"));
+								lottoNums[labelStr - 1].setBtnStatus(inputLabels[rowNum][j].getBtnStatus2());
 							}
 
 						} else if (changeBtns[1] == e.getSource()) {
-							fullRow = 1;
+							rowNum = 1;
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
-								labelStr = Integer.parseInt(inputLabels[fullRow][j].getText());
+								labelStr = Integer.parseInt(inputLabels[rowNum][j].getText());
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
 								lottoNums[labelStr - 1].setStatus(false);
-								changeBtns[fullRow].setIcon(new ImageIcon("resetR.png"));
+								changeBtns[rowNum].setIcon(new ImageIcon("resetR.png"));
+								lottoNums[labelStr - 1].setBtnStatus(inputLabels[rowNum][j].getBtnStatus2());
 							}
 						} else if (changeBtns[2] == e.getSource()) {
-							fullRow = 2;
+							rowNum = 2;
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
-								labelStr = Integer.parseInt(inputLabels[fullRow][j].getText());
+								labelStr = Integer.parseInt(inputLabels[rowNum][j].getText());
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
 								lottoNums[labelStr - 1].setStatus(false);
-								changeBtns[fullRow].setIcon(new ImageIcon("resetR.png"));
+								changeBtns[rowNum].setIcon(new ImageIcon("resetR.png"));
+								lottoNums[labelStr - 1].setBtnStatus(inputLabels[rowNum][j].getBtnStatus2());
 							}
 						} else if (changeBtns[3] == e.getSource()) {
-							fullRow = 3;
+							rowNum = 3;
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
-								labelStr = Integer.parseInt(inputLabels[fullRow][j].getText());
+								labelStr = Integer.parseInt(inputLabels[rowNum][j].getText());
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
 								lottoNums[labelStr - 1].setStatus(false);
-								changeBtns[fullRow].setIcon(new ImageIcon("resetR.png"));
+								changeBtns[rowNum].setIcon(new ImageIcon("resetR.png"));
+								lottoNums[labelStr - 1].setBtnStatus(inputLabels[rowNum][j].getBtnStatus2());
 							}
 						} else if (changeBtns[4] == e.getSource()) {
-							fullRow = 4;
+							rowNum = 4;
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
-								labelStr = Integer.parseInt(inputLabels[fullRow][j].getText());
+								labelStr = Integer.parseInt(inputLabels[rowNum][j].getText());
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
 								lottoNums[labelStr - 1].setStatus(false);
-								changeBtns[fullRow].setIcon(new ImageIcon("resetR.png"));
+								changeBtns[rowNum].setIcon(new ImageIcon("resetR.png"));
+								lottoNums[labelStr - 1].setBtnStatus(inputLabels[rowNum][j].getBtnStatus2());
 							}
 						}
 					} catch (ArrayIndexOutOfBoundsException e2) {
-//                     JOptionPane.showMessageDialog(null, "해당 줄에 입력된 번호가 없습니다.");
+						modifying = false;
 					}
-					modifying = true;
-					manualCount = 0;
 				}
 			});
 		}
 
+		// 초기화버튼 메소드
 		removeBtns = new JButton[5];
 		for (int i = 0; i < 5; i++) {
 			removeBtns[i] = new JButton(new ImageIcon("reset.png"));
@@ -415,43 +443,43 @@ public class MainFrame extends JFrame implements ActionListener {
 					boolean selected = abstractButton.getModel().isSelected();
 					try {
 						if (removeBtns[0] == e.getSource()) {
+							rowNum = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								inputLabels[0][j].setText("0");
 								inputLabels[0][j].setForeground(Color.BLACK);
 								inputLabels[0][j].setIcon(new ImageIcon());
-								changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 								statusLabels[0].setText("상태");
 							}
 						} else if (removeBtns[1] == e.getSource()) {
+							rowNum = 1;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								inputLabels[1][j].setText("0");
 								inputLabels[1][j].setForeground(Color.BLACK);
 								inputLabels[1][j].setIcon(new ImageIcon());
-								changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 								statusLabels[1].setText("상태");
 							}
 						} else if (removeBtns[2] == e.getSource()) {
+							rowNum = 2;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								inputLabels[2][j].setText("0");
 								inputLabels[2][j].setForeground(Color.BLACK);
 								inputLabels[2][j].setIcon(new ImageIcon());
-								changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 								statusLabels[2].setText("상태");
 							}
 						} else if (removeBtns[3] == e.getSource()) {
+							rowNum = 3;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								inputLabels[3][j].setText("0");
 								inputLabels[3][j].setForeground(Color.BLACK);
 								inputLabels[3][j].setIcon(new ImageIcon());
-								changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 								statusLabels[3].setText("상태");
 							}
 						} else if (removeBtns[4] == e.getSource()) {
+							rowNum = 4;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								inputLabels[4][j].setText("0");
 								inputLabels[4][j].setForeground(Color.BLACK);
 								inputLabels[4][j].setIcon(new ImageIcon());
-								changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 								statusLabels[4].setText("상태");
 							}
 						}
@@ -462,23 +490,30 @@ public class MainFrame extends JFrame implements ActionListener {
 						modifying = false;
 						inputNumList1.clear();
 						inputNumSet1.clear();
-						manualCount = 0;
-						fullRow = 0;
+						rowNum = 0;
 					} catch (NullPointerException e2) {
-						//
-					}
 
+					}
+					randombtn.setSelected(selected);
+					for (int i = 0; i < lottoNums.length; i++) {
+						lottoNums[i].setBtnStatus(0);
+					}
+					for (int i = 0; i < 5; i++) {
+						changeBtns[i].setIcon(new ImageIcon("remove.png"));
+					}
 				}
 			});
 		}
 
 	}
 
-// 구매하기 버튼
+	// 구매하기 버튼
 	public void resultButton(JButton result) {
 		result.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				AbstractButton abstractButton = (AbstractButton) e.getSource();
+				boolean selected = abstractButton.getModel().isSelected();
 				if (isAllRowFull(statusLabels) == 0) {
 					JOptionPane.showMessageDialog(null, "구매할 번호를 선택해 주세요.");
 				} else {
@@ -494,8 +529,7 @@ public class MainFrame extends JFrame implements ActionListener {
 							}
 							resultArr[i] = new ArrayList<Integer>(list);
 						}
-//                         다이얼 로그 호출하기
-
+//                      다이얼 로그 호출하기
 						new Money(resultArr);
 
 						for (int j = 0; j < inputLabels.length; j++) {
@@ -506,6 +540,17 @@ public class MainFrame extends JFrame implements ActionListener {
 								inputLabels[j][k].setForeground(Color.black);
 							}
 						}
+						for (int i = 0; i < lottoNums.length; i++) {
+							lottoNums[i].setSelected(selected);
+							lottoNums[i].setStatus(false);
+							lottoNums[i].setBtnStatus(0);
+						}
+						for (int j = 0; j < 5; j++) {
+							changeBtns[j].setIcon(new ImageIcon("remove.png"));
+						}
+						inputNumList1.clear();
+						inputNumSet1.clear();
+						rowNum = 0;
 					}
 				}
 
@@ -520,17 +565,12 @@ public class MainFrame extends JFrame implements ActionListener {
 				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
 				if (selected) {
-					autoMode = true;
 					if (isAllRowFull(statusLabels) == 5 && !modifying) {
-						// JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
 						inputNumList1.clear();
 						inputNumSet1.clear();
+						randombtn.setSelected(!selected);
 					} else if (inputNumSet1.size() == 6) {
-						for (int i = 0; i < lottoNums.length; i++) {
-							lottoNums[i].setSelected(!selected);
-							lottoNums[i].setStatus(false);
-						}
-						// JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.2");
+						randombtn.setSelected(!selected);
 					} else {
 						if (inputNumSet1.size() == 0) {
 							while (inputNumSet1.size() < 6) {
@@ -543,6 +583,7 @@ public class MainFrame extends JFrame implements ActionListener {
 								int num = inputNumList1.get(i) - 1;
 								lottoNums[num].setSelected(selected);
 								lottoNums[num].setStatus(false);
+								lottoNums[num].setBtnStatus(-1);
 							}
 						} else if (inputNumSet1.size() != 0) {
 							while (inputNumSet1.size() < 6) {
@@ -555,17 +596,19 @@ public class MainFrame extends JFrame implements ActionListener {
 								int num = inputNumList1.get(i) - 1;
 								lottoNums[num].setSelected(selected);
 								lottoNums[num].setStatus(false);
-
+								if (lottoNums[num].getBtnStatus() != 1) {
+									lottoNums[num].setBtnStatus(-1);
+								}
 							}
 						}
 					}
 				} else if (!selected) {
-					autoMode = false;
 					inputNumList1.clear();
 					inputNumSet1.clear();
 					for (int i = 0; i < lottoNums.length; i++) {
 						lottoNums[i].setSelected(selected);
 						lottoNums[i].setStatus(true);
+						lottoNums[i].setBtnStatus(0);
 					}
 				}
 			}
@@ -575,14 +618,13 @@ public class MainFrame extends JFrame implements ActionListener {
 	// 확인 버튼
 	public void confirmButton(JButton select) {
 		select.addActionListener(new ActionListener() {
-			private Image imageSet2;
-
 			public void actionPerformed(ActionEvent e) {
 				String command = e.getActionCommand();
 				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
 				if (!modifying) {
-					fullRow = dicisionRowNum(statusLabels);
+					rowNum = dicisionRowNum(statusLabels);
+					randombtn.setSelected(selected);
 				}
 				if (isAllRowFull(statusLabels) == 5 && !modifying) {
 					randombtn.setSelected(selected);
@@ -594,60 +636,80 @@ public class MainFrame extends JFrame implements ActionListener {
 						if (inputNumList1.size() == 6) {
 							if (command.equals("확인")) {
 								for (int i = 0; i < lottoNums.length; i++) {
-									changeBtns[fullRow].setIcon(new ImageIcon("remove.png"));
 									lottoNums[i].setSelected(selected);
 									lottoNums[i].setStatus(true);
 								}
-								for (int i = 0; i < inputLabels[fullRow].length; i++) {
-									String str = String.valueOf(inputNumList1.get(i));
-									if (inputNumList1.get(i) < 10) {
+								for (int j = 0; j < 5; j++) {
+									changeBtns[j].setIcon(new ImageIcon("remove.png"));
+								}
+								for (int i = 0; i < inputLabels[rowNum].length; i++) {
+									if (inputNumList1.get(i) < 11) {
 										iconSet2 = iconYellow;
-									} else if (inputNumList1.get(i) < 20) {
+									} else if (inputNumList1.get(i) < 21) {
 										iconSet2 = iconBlue;
-									} else if (inputNumList1.get(i) < 30) {
+									} else if (inputNumList1.get(i) < 31) {
 										iconSet2 = iconRed;
-									} else if (inputNumList1.get(i) < 40) {
+									} else if (inputNumList1.get(i) < 41) {
 										iconSet2 = iconGray;
 									} else {
 										iconSet2 = iconGreen;
 									}
 									imageSet2 = iconSet2.getImage();
 									updateImg = imageSet2.getScaledInstance(31, 31, Image.SCALE_SMOOTH);
-									inputLabels[fullRow][i].setText(String.format("%02d", inputNumList1.get(i)));
-									inputLabels[fullRow][i].setIcon(new ImageIcon(updateImg));
-									inputLabels[fullRow][i].setForeground(Color.white);
-									inputLabels[fullRow][i].setIconTextGap(-22);
+									inputLabels[rowNum][i].setText(String.format("%02d", inputNumList1.get(i)));
+									inputLabels[rowNum][i].setIcon(new ImageIcon(updateImg));
+									inputLabels[rowNum][i].setForeground(Color.white);
+									inputLabels[rowNum][i].setIconTextGap(-22);
+								}
+
+								int count = -1;
+								for (int i = 0; i < lottoNums.length; i++) {
+									if (lottoNums[i].getBtnStatus() != 0) {
+										count++;
+										inputLabels[rowNum][count].setBtnStatus2(lottoNums[i].getBtnStatus());
+									}
 								}
 								// 자동,수동,반자동 여부 결정
+								int manualCount = 0;
+								int autoCount = 0;
+								for (int i = 0; i < lottoNums.length; i++) {
+									if (lottoNums[i].getBtnStatus() == 1) {
+										manualCount++;
+									} else if (lottoNums[i].getBtnStatus() == -1) {
+										autoCount++;
+
+									}
+								}
 								if (manualCount == 6) {
-									statusLabels[fullRow].setText("수동");
-								} else if (manualCount == 0) {
-									statusLabels[fullRow].setText("자동");
+									statusLabels[rowNum].setText("수동");
+								} else if (autoCount == 6) {
+									statusLabels[rowNum].setText("자동");
 								} else {
-									statusLabels[fullRow].setText("반자동");
+									statusLabels[rowNum].setText("반자동");
 								}
 								if (inputNumSet1.size() == 6) {
 									modifying = false;
 								} else {
-									fullRow = 0;
+									rowNum = 0;
 								}
 								inputNumList1.clear();
 								inputNumSet1.clear();
-								randombtn.setSelected(selected);
+
+								for (int i = 0; i < lottoNums.length; i++) {
+									lottoNums[i].setBtnStatus(0);
+								}
 							}
 						} else {
 							JOptionPane.showMessageDialog(null, "번호 6개를 선택해주세요.");
 						}
 					} catch (NullPointerException exception) {
-						JOptionPane.showMessageDialog(null, "6개를 선택해주세요.");
+						JOptionPane.showMessageDialog(null, "번호 6개를 선택해주세요.");
 					} catch (ArrayIndexOutOfBoundsException exception) {
-						// JOptionPane.showMessageDialog(null, "모든번호가 다 선택되었습니다.");
 						inputNumList1.clear();
 						inputNumSet1.clear();
 					}
 				}
-				manualCount = 0;
-
+				randombtn.setSelected(selected);
 			}
 		});
 	}
@@ -659,7 +721,6 @@ public class MainFrame extends JFrame implements ActionListener {
 		AbstractButton abstractButton = (AbstractButton) e.getSource();
 		boolean selected = abstractButton.getModel().isSelected();
 		if (isAllRowFull(statusLabels) == 5 && !modifying) {
-			// JOptionPane.showMessageDialog(null, "모든번호가 선택되었습니다.");
 			for (int i = 0; i < lottoNums.length; i++) {
 				if (check == lottoNums[i]) {
 					lottoNums[i].setSelected(!selected);
@@ -672,33 +733,30 @@ public class MainFrame extends JFrame implements ActionListener {
 					if (lottoNums[i].isStatus()) {
 						inputNumSet1.add(Integer.parseInt(lottoNums[i].getText()));
 						lottoNums[i].setStatus(false);
-						manualCount++;
+						lottoNums[i].setBtnStatus(1);
 						if (inputNumSet1.size() > 6 && !modifying) {
 							inputNumSet1.remove(Integer.parseInt(lottoNums[i].getText()));
 							lottoNums[i].setSelected(!selected);
 							lottoNums[i].setStatus(true);
-							manualCount--;
+							lottoNums[i].setBtnStatus(0);
 							break;
 						} else if (inputNumSet1.size() > 6 && modifying) {
 							inputNumSet1.remove(Integer.parseInt(lottoNums[i].getText()));
 							lottoNums[i].setSelected(!selected);
 							lottoNums[i].setStatus(true);
-							manualCount--;
+							lottoNums[i].setBtnStatus(0);
 						}
 					} else if (!lottoNums[i].isStatus()) {
 						lottoNums[i].setStatus(true);
 						inputNumSet1.remove(Integer.parseInt(lottoNums[i].getText()));
-						manualCount--;
+						lottoNums[i].setBtnStatus(0);
 					}
 				}
 			}
 		}
-		if (manualCount < 0) {
-			manualCount = 0;
-		}
 	}
 
-	public int falseCount(ToggleButton[] arr) {
+	public int falseCount(MyToggleButton[] arr) {
 		int count = 0;
 		for (int i = 0; i < arr.length; i++) {
 			if (!arr[i].isStatus()) {
