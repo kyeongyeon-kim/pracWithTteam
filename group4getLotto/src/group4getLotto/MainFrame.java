@@ -98,6 +98,8 @@ public class MainFrame extends JFrame implements ActionListener {
 	private JButton[] removeBtns;
 	private JLabel showSlectedRow;
 	private String[] alphabets;
+	private List<SaveData> saveDataList = new ArrayList<>(); // 메인 필드에 추가
+	private int countMoney;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -155,6 +157,19 @@ public class MainFrame extends JFrame implements ActionListener {
 		contentPane.add(main);
 		main.setLayout(null);
 		main.setOpaque(false);
+		
+		// 이전 회차 확인 버튼
+		JButton btnNew = new JButton("이전 회차"); // + group 및 토글버튼 주석 처리
+		btnNew.setBounds(12, 69, 63, 64);;
+		main.add(btnNew);
+		btnNew.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (saveDataList.size() > 0) {
+					countFream();
+				}
+			}
+		});
 
 		// 전적확인버튼 (작업중)
 		JButton mix = new JButton("미");
@@ -559,8 +574,30 @@ public class MainFrame extends JFrame implements ActionListener {
 							resultArr[i] = new ArrayList<Integer>(list);
 						}
 //                      다이얼 로그 호출하기
-						new Money(resultArr);
+						Money money = new Money(resultArr);
 
+						saveDataList.add(new SaveData());
+						saveDataList.get(saveDataList.size() - 1).setBonusNumber(money.getRan().getLottoBonus());
+						saveDataList.get(saveDataList.size() - 1).setMainNumber(money.getRan().getLottoMain());
+
+						int[][] saveDataInputNumberList = new int[5][6];
+
+						for (int i = 0; i < 5; i++) {
+							boolean sw = false;
+							for (int j = 0; j < 6; j++) {
+								saveDataInputNumberList[i][j] = (int) resultArr[i].get(j);
+								if ((int) resultArr[i].get(j) != 0) {
+									sw = true;
+								}
+							}
+							if (sw) {
+								countMoney++;
+							}
+						}
+						saveDataList.get(saveDataList.size() - 1).setInputNumber(saveDataInputNumberList);
+						saveDataList.get(saveDataList.size() - 1).setMoney(money.getRan().getMoney());
+						
+						
 						for (int j = 0; j < inputLabels.length; j++) {
 							statusLabels[j].setText("상태");
 							for (int k = 0; k < inputLabels[j].length; k++) {
@@ -586,7 +623,9 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		});
 	}
-
+	public void countFream() {
+		new CountFrame(saveDataList, countMoney);
+	}
 // 자동버튼
 	public void autoButton(JToggleButton randombtn) {
 		randombtn.addActionListener(new ActionListener() {
