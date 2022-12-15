@@ -3,6 +3,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.SystemColor;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
+
+import javafx.event.ActionEvent;
 
 public class Money extends JDialog {
    JScrollPane scrollPane;
@@ -222,9 +225,9 @@ public Money(List[] list) {
                }
             }
             if (sw) {
-               for (int g = 0; g < 6; g++) {
-                  ImageIcon aImg = new ImageIcon();
-                  if (ran.getLottoMain()[g] == (int) list_[i].get(j) || ran.getLottoBonus() == (int) list_[i].get(j)) {
+            	ImageIcon aImg = new ImageIcon();
+            	for (int g = 0; g < 6; g++) {
+                  if (ran.getLottoMain()[g] == (int) list_[i].get(j)) {
                     if ((int) list_[i].get(j) <= 10) {
                        aImg = new ImageIcon(Money.class.getResource("/images/y.png"));
                        okNumberlbl[i][j].setForeground(Color.WHITE);
@@ -241,12 +244,35 @@ public Money(List[] list) {
                        aImg = new ImageIcon(Money.class.getResource("/images/gr.png"));
                        okNumberlbl[i][j].setForeground(Color.WHITE);
                     }
-                    Image bImg = aImg.getImage();
-                    Image cImg = bImg.getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH);
-                    ImageIcon dImg = new ImageIcon(cImg); 
-                   oklbl[i][j].setIcon(dImg);
+         		   Image bImg = aImg.getImage();
+         		   Image cImg = bImg.getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH);
+         		   ImageIcon dImg = new ImageIcon(cImg); 
+         		   oklbl[i][j].setIcon(dImg);
                  }
                }
+               if (ran.getRank().equals("2등") && ran.getLottoBonus() == (int) list_[i].get(j)) {
+        		   if ((int) list_[i].get(j) <= 10) {
+        			   aImg = new ImageIcon(Money.class.getResource("/images/y.png"));
+        			   okNumberlbl[i][j].setForeground(Color.WHITE);
+        		   } else if ((int) list_[i].get(j) <= 20 ) {
+        			   aImg = new ImageIcon(Money.class.getResource("/images/b.png"));
+        			   okNumberlbl[i][j].setForeground(Color.WHITE);
+        		   } else if ((int) list_[i].get(j) <= 30 ) {
+        			   aImg = new ImageIcon(Money.class.getResource("/images/r.png"));
+        			   okNumberlbl[i][j].setForeground(Color.WHITE);
+        		   } else if ((int) list_[i].get(j) <= 40 ) {
+        			   aImg = new ImageIcon(Money.class.getResource("/images/g.png"));
+        			   okNumberlbl[i][j].setForeground(Color.WHITE);
+        		   } else {
+        			   aImg = new ImageIcon(Money.class.getResource("/images/gr.png"));
+        			   okNumberlbl[i][j].setForeground(Color.WHITE);
+        		   }
+        		   Image bImg = aImg.getImage();
+        		   Image cImg = bImg.getScaledInstance(24, 24, java.awt.Image.SCALE_SMOOTH);
+        		   ImageIcon dImg = new ImageIcon(cImg); 
+        		   oklbl[i][j].setIcon(dImg);
+               }
+               
             }
             backgroud2.add(oklbl[i][j]);
          }
@@ -274,17 +300,23 @@ public Money(List[] list) {
 
       // 확인버튼
       JButton okbtn = new JButton("확인");
-      okbtn.addMouseListener(new MouseAdapter() {
-
-      @Override
-      public void mouseClicked(MouseEvent e) {
-         if (okbtn == e.getSource()) {
-            dispose();
-         }
-      }
-   }); 
-   
-      
+      okbtn.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+			if (okbtn == e.getSource()) {
+	            dispose();
+	         }
+		}
+      });
+//      JButton okbtn = new JButton("확인");
+//      okbtn.addMouseListener(new MouseAdapter() {
+//	      @Override
+//	      public void mouseClicked(MouseEvent e) {
+//	         if (okbtn == e.getSource()) {
+//	            dispose();
+//	         }
+//	      }
+//      }); 
       
       JLabel baseLabel = new JLabel();
       baseLabel.setIcon(new ImageIcon(Money.class.getResource("/images/background2.png")));
