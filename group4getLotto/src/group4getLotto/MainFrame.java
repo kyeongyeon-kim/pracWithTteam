@@ -27,11 +27,12 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
 class MyToggleButton extends JToggleButton {
 	private boolean printStatus = true;
 	private int btnStatus = 0; // 0 안눌러진 상태 /1 수동/-1 자동
-	private Color bg;
 
 	public MyToggleButton(ImageIcon convertToNumber) {
 		setIcon(convertToNumber);
@@ -95,6 +96,8 @@ public class MainFrame extends JFrame implements ActionListener {
 	private Image imageSet2;
 	private JButton[] changeBtns;
 	private JButton[] removeBtns;
+	private JLabel showSlectedRow;
+	private String[] alphabets;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -156,12 +159,12 @@ public class MainFrame extends JFrame implements ActionListener {
 		// 전적확인버튼 (작업중)
 		JButton mix = new JButton("미");
 		mix.setSelected(true);
-		mix.setBounds(12, 69, 63, 64);
+		mix.setBounds(12, 143, 63, 64);
 		main.add(mix);
 
 		// 설명서버튼
 		JButton manualBtn = new JButton("설명");
-		manualBtn.setBounds(12, 143, 63, 64);
+		manualBtn.setBounds(12, 217, 63, 64);
 		main.add(manualBtn);
 		manualBtn.addActionListener(new ActionListener() {
 
@@ -193,9 +196,9 @@ public class MainFrame extends JFrame implements ActionListener {
 		abcde.setLayout(new GridLayout(0, 1, 0, 0));
 		abcde.setBackground(new Color(255, 0, 0, 0));
 
-		String[] alphabet = { "A", "B", "C", "D", "E" };
+		alphabets = new String[] { "A", "B", "C", "D", "E" };
 		for (int i = 0; i < abcdeLabels.length; i++) {
-			abcdeLabels[i] = new JLabel(alphabet[i]);
+			abcdeLabels[i] = new JLabel(alphabets[i]);
 			abcde.add(abcdeLabels[i]);
 			abcdeLabels[i].setHorizontalAlignment(JLabel.CENTER);
 		}
@@ -336,6 +339,13 @@ public class MainFrame extends JFrame implements ActionListener {
 		});
 		main.add(close);
 
+		showSlectedRow = new JLabel("");
+		showSlectedRow.setHorizontalAlignment(SwingConstants.CENTER);
+		showSlectedRow.setBounds(12, 69, 63, 64);
+		showSlectedRow.setFont(new Font("굴림", Font.BOLD, 20));
+		showSlectedRow.setBorder(new TitledBorder(new LineBorder(Color.black),"선택"));
+		main.add(showSlectedRow);
+
 		// 수정버튼 메소드
 		changeBtns = new JButton[5];
 		for (int i = 0; i < 5; i++) {
@@ -358,12 +368,27 @@ public class MainFrame extends JFrame implements ActionListener {
 							changeBtns[rowNum].setIcon(new ImageIcon("remove.png"));
 						}
 					}
-					try {
+					boolean emptyRow = false;
+					for (int i = 0; i < changeBtns.length; i++) {
+						if (changeBtns[i] == e.getSource()) {
+							for (int j = 0; j < quantity.length; j++) {
+								if (inputLabels[i][j].getText().equals("0")) {
+									emptyRow = true;
+									break;
+								}
+							}
+						}
+					}
+
+					if (emptyRow) {
+						modifying = false;
+					} else {
 						if (changeBtns[0] == e.getSource()) {
 							rowNum = 0;
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
+								showSlectedRow.setText("A");
 								labelStr = Integer.parseInt(inputLabels[rowNum][j].getText());
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
@@ -377,6 +402,7 @@ public class MainFrame extends JFrame implements ActionListener {
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
+								showSlectedRow.setText("B");
 								labelStr = Integer.parseInt(inputLabels[rowNum][j].getText());
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
@@ -389,6 +415,7 @@ public class MainFrame extends JFrame implements ActionListener {
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
+								showSlectedRow.setText("C");
 								labelStr = Integer.parseInt(inputLabels[rowNum][j].getText());
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
@@ -401,6 +428,7 @@ public class MainFrame extends JFrame implements ActionListener {
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
+								showSlectedRow.setText("D");
 								labelStr = Integer.parseInt(inputLabels[rowNum][j].getText());
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
@@ -413,6 +441,7 @@ public class MainFrame extends JFrame implements ActionListener {
 							int labelStr = 0;
 							for (int j = 0; j <= inputLabels.length; j++) {
 								// 출력 라벨에 있는 텍스트 인트형으로 변환해서 버튼 언셀렉
+								showSlectedRow.setText("E");
 								labelStr = Integer.parseInt(inputLabels[rowNum][j].getText());
 								lottoNums[labelStr - 1].setSelected(!selected);
 								inputNumSet1.add(labelStr);
@@ -421,8 +450,6 @@ public class MainFrame extends JFrame implements ActionListener {
 								lottoNums[labelStr - 1].setBtnStatus(inputLabels[rowNum][j].getBtnStatus2());
 							}
 						}
-					} catch (ArrayIndexOutOfBoundsException e2) {
-						modifying = false;
 					}
 				}
 			});
@@ -501,6 +528,8 @@ public class MainFrame extends JFrame implements ActionListener {
 					for (int i = 0; i < 5; i++) {
 						changeBtns[i].setIcon(new ImageIcon("remove.png"));
 					}
+					showSlectedRow.setText("");
+					rowNum = 0;
 				}
 			});
 		}
@@ -565,6 +594,7 @@ public class MainFrame extends JFrame implements ActionListener {
 				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
 				if (selected) {
+					
 					if (isAllRowFull(statusLabels) == 5 && !modifying) {
 						inputNumList1.clear();
 						inputNumSet1.clear();
@@ -572,6 +602,7 @@ public class MainFrame extends JFrame implements ActionListener {
 					} else if (inputNumSet1.size() == 6) {
 						randombtn.setSelected(!selected);
 					} else {
+						showSlectedRow.setText(alphabets[dicisionRowNum(statusLabels)]);
 						if (inputNumSet1.size() == 0) {
 							while (inputNumSet1.size() < 6) {
 								int randomNum = random.nextInt(44) + 1;
@@ -694,6 +725,7 @@ public class MainFrame extends JFrame implements ActionListener {
 								}
 								inputNumList1.clear();
 								inputNumSet1.clear();
+								showSlectedRow.setText("");
 
 								for (int i = 0; i < lottoNums.length; i++) {
 									lottoNums[i].setBtnStatus(0);
@@ -731,6 +763,7 @@ public class MainFrame extends JFrame implements ActionListener {
 			for (int i = 0; i < lottoNums.length; i++) {
 				if (check == lottoNums[i]) {
 					if (lottoNums[i].isStatus()) {
+						showSlectedRow.setText(alphabets[dicisionRowNum(statusLabels)]);
 						inputNumSet1.add(Integer.parseInt(lottoNums[i].getText()));
 						lottoNums[i].setStatus(false);
 						lottoNums[i].setBtnStatus(1);
@@ -789,5 +822,4 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		return count;
 	}
-
 }
