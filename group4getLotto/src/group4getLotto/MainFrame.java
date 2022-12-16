@@ -248,6 +248,7 @@ public class MainFrame extends JFrame implements ActionListener {
 			lottoNums[i].setOpaque(false);
 			lottoNums[i].setBorderPainted(false);
 			lottoNums[i].setSelectedIcon(new ImageIcon("black2.png"));
+			lottoNums[i].setOpaque(false);
 		}
 
 		// 오른쪽 패널

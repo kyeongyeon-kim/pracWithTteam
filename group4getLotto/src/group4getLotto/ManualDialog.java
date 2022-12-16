@@ -35,7 +35,6 @@ class ImagePanel extends JPanel {
 public class ManualDialog extends JDialog {
 
 	public ManualDialog() {
-//		ImagePanel panel = new ImagePanel(new ImageIcon("/manual.jpg").getImage());
 		ImagePanel panel = new ImagePanel();
 		JLabel baseLabel = new JLabel();
 		panel.setBackground(new Color(0, 0, 0));
@@ -44,7 +43,7 @@ public class ManualDialog extends JDialog {
 		add(panel);
 		pack();
 		setTitle("로또프로그램 사용 설명");
-		setSize(610, 810);
+		setSize(610, 930);
 		setLocationRelativeTo(null);
 		setVisible(true);
 
