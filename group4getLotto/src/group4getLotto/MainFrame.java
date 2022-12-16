@@ -100,6 +100,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	private String[] alphabets;
 	private List<SaveData> saveDataList = new ArrayList<>(); // 메인 필드에 추가
 	private int countMoney;
+	private JLabel eventRound;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -125,11 +126,11 @@ public class MainFrame extends JFrame implements ActionListener {
 		icon = new ImageIcon(image);
 		return icon;
 	}
-
+	
 	public MainFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1000, 600);
-
+		
 		// 백그라운드 이미지
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		img = tk.getImage("background.png");
@@ -159,8 +160,10 @@ public class MainFrame extends JFrame implements ActionListener {
 		main.setOpaque(false);
 		
 		// 이전 회차 확인 버튼
-		JButton btnNew = new JButton("이전 회차"); // + group 및 토글버튼 주석 처리
-		btnNew.setBounds(12, 69, 63, 64);;
+		JButton btnNew = new JButton("<HTML><body style='text-align:center;'>이전<br>회차<br>확인</body></HTML>"); // + group 및 토글버튼 주석 처리
+		btnNew.setBounds(12, 217, 63, 64);
+		btnNew.setBackground(new Color(255, 0, 0, 0));
+		btnNew.setOpaque(false);
 		main.add(btnNew);
 		btnNew.addActionListener(new ActionListener() {
 			@Override
@@ -171,15 +174,11 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		});
 
-		// 전적확인버튼 (작업중)
-		JButton mix = new JButton("미");
-		mix.setSelected(true);
-		mix.setBounds(12, 143, 63, 64);
-		main.add(mix);
-
 		// 설명서버튼
-		JButton manualBtn = new JButton("설명");
-		manualBtn.setBounds(12, 217, 63, 64);
+		JButton manualBtn = new JButton("<HTML><body style='text-align:center;'>설명<br>안내</body></HTML>");
+		manualBtn.setBounds(12, 291, 63, 64);
+		manualBtn.setBackground(new Color(255, 0, 0, 0));
+		manualBtn.setOpaque(false);
 		main.add(manualBtn);
 		manualBtn.addActionListener(new ActionListener() {
 
@@ -267,10 +266,6 @@ public class MainFrame extends JFrame implements ActionListener {
 		autoButton(randombtn);
 		main.add(randombtn);
 
-		// 복권 이름
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setBounds(12, 10, 277, 57);
-
 		// 구매 버튼
 		JButton result = new JButton("구매 하기 !");
 		result.setBounds(603, 429, 100, 40);
@@ -319,28 +314,6 @@ public class MainFrame extends JFrame implements ActionListener {
 		removePanel.setBounds(898, 107, 50, 312);
 		removePanel.setOpaque(false);
 
-		// 콤보박스
-		String[] quantity = { "미구현", "1", "2", "3", "4", "5" };
-		JComboBox quantityBox = new JComboBox(quantity);
-		quantityBox.setBounds(144, 447, 58, 33);
-		main.add(quantityBox);
-		quantityBox.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String quantityNum = "1";
-				quantityNum = quantityBox.getSelectedItem().toString();
-
-//            quantityIntNum = Integer.parseInt(quantityNum);
-			}
-		});
-
-		JLabel lblNewLabel_1 = new JLabel("적용 수량");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setFont(new Font("굴림", Font.BOLD, 14));
-		lblNewLabel_1.setBounds(60, 447, 78, 33);
-		main.add(lblNewLabel_1);
-
 		JButton close = new JButton("종료");
 		close.setOpaque(false);
 		close.setBackground(new Color(255, 0, 0, 0));
@@ -356,10 +329,17 @@ public class MainFrame extends JFrame implements ActionListener {
 
 		showSlectedRow = new JLabel("");
 		showSlectedRow.setHorizontalAlignment(SwingConstants.CENTER);
-		showSlectedRow.setBounds(12, 69, 63, 64);
+		showSlectedRow.setBounds(12, 143, 63, 64);
 		showSlectedRow.setFont(new Font("굴림", Font.BOLD, 20));
-		showSlectedRow.setBorder(new TitledBorder(new LineBorder(Color.black),"선택"));
+		showSlectedRow.setBorder(new TitledBorder(new LineBorder(Color.black),"Slected"));
 		main.add(showSlectedRow);
+		
+		eventRound = new JLabel("1");
+		eventRound.setHorizontalAlignment(SwingConstants.CENTER);
+		eventRound.setFont(new Font("굴림", Font.BOLD, 20));
+		eventRound.setBorder(new TitledBorder(new LineBorder(Color.black),"회차"));
+		eventRound.setBounds(12, 69, 63, 64);
+		main.add(eventRound);
 
 		// 수정버튼 메소드
 		changeBtns = new JButton[5];
@@ -383,10 +363,14 @@ public class MainFrame extends JFrame implements ActionListener {
 							changeBtns[rowNum].setIcon(new ImageIcon("remove.png"));
 						}
 					}
+					for (int i = 0; i < lottoNums.length; i++) {
+						lottoNums[i].setBtnStatus(0);
+						lottoNums[i].setEnabled(true);
+					}
 					boolean emptyRow = false;
 					for (int i = 0; i < changeBtns.length; i++) {
 						if (changeBtns[i] == e.getSource()) {
-							for (int j = 0; j < quantity.length; j++) {
+							for (int j = 0; j < inputLabels[i].length; j++) {
 								if (inputLabels[i][j].getText().equals("0")) {
 									emptyRow = true;
 									break;
@@ -397,6 +381,17 @@ public class MainFrame extends JFrame implements ActionListener {
 
 					if (emptyRow) {
 						modifying = false;
+						for (int i = 0; i < lottoNums.length; i++) {
+							if (!lottoNums[i].isStatus()) {
+								lottoNums[i].setSelected(selected);
+								lottoNums[i].setStatus(true);
+								changeBtns[rowNum].setIcon(new ImageIcon("remove.png"));
+							}
+						}
+						for (int i = 0; i < lottoNums.length; i++) {
+							lottoNums[i].setBtnStatus(0);
+							lottoNums[i].setEnabled(true);
+						}
 					} else {
 						if (changeBtns[0] == e.getSource()) {
 							rowNum = 0;
@@ -411,7 +406,7 @@ public class MainFrame extends JFrame implements ActionListener {
 								changeBtns[rowNum].setIcon(new ImageIcon("resetR.png"));
 								lottoNums[labelStr - 1].setBtnStatus(inputLabels[rowNum][j].getBtnStatus2());
 							}
-
+							disableButton();
 						} else if (changeBtns[1] == e.getSource()) {
 							rowNum = 1;
 							int labelStr = 0;
@@ -425,6 +420,7 @@ public class MainFrame extends JFrame implements ActionListener {
 								changeBtns[rowNum].setIcon(new ImageIcon("resetR.png"));
 								lottoNums[labelStr - 1].setBtnStatus(inputLabels[rowNum][j].getBtnStatus2());
 							}
+							disableButton();
 						} else if (changeBtns[2] == e.getSource()) {
 							rowNum = 2;
 							int labelStr = 0;
@@ -438,6 +434,7 @@ public class MainFrame extends JFrame implements ActionListener {
 								changeBtns[rowNum].setIcon(new ImageIcon("resetR.png"));
 								lottoNums[labelStr - 1].setBtnStatus(inputLabels[rowNum][j].getBtnStatus2());
 							}
+							disableButton();
 						} else if (changeBtns[3] == e.getSource()) {
 							rowNum = 3;
 							int labelStr = 0;
@@ -451,6 +448,7 @@ public class MainFrame extends JFrame implements ActionListener {
 								changeBtns[rowNum].setIcon(new ImageIcon("resetR.png"));
 								lottoNums[labelStr - 1].setBtnStatus(inputLabels[rowNum][j].getBtnStatus2());
 							}
+							disableButton();
 						} else if (changeBtns[4] == e.getSource()) {
 							rowNum = 4;
 							int labelStr = 0;
@@ -463,7 +461,9 @@ public class MainFrame extends JFrame implements ActionListener {
 								lottoNums[labelStr - 1].setStatus(false);
 								changeBtns[rowNum].setIcon(new ImageIcon("resetR.png"));
 								lottoNums[labelStr - 1].setBtnStatus(inputLabels[rowNum][j].getBtnStatus2());
+								
 							}
+							disableButton();
 						}
 					}
 				}
@@ -528,6 +528,7 @@ public class MainFrame extends JFrame implements ActionListener {
 						for (int i = 0; i < lottoNums.length; i++) {
 							lottoNums[i].setSelected(selected);
 							lottoNums[i].setStatus(true);
+							lottoNums[i].setEnabled(true);
 						}
 						modifying = false;
 						inputNumList1.clear();
@@ -545,6 +546,7 @@ public class MainFrame extends JFrame implements ActionListener {
 					}
 					showSlectedRow.setText("");
 					rowNum = 0;
+					
 				}
 			});
 		}
@@ -610,6 +612,7 @@ public class MainFrame extends JFrame implements ActionListener {
 							lottoNums[i].setSelected(selected);
 							lottoNums[i].setStatus(false);
 							lottoNums[i].setBtnStatus(0);
+							lottoNums[i].setEnabled(true);
 						}
 						for (int j = 0; j < 5; j++) {
 							changeBtns[j].setIcon(new ImageIcon("remove.png"));
@@ -617,6 +620,9 @@ public class MainFrame extends JFrame implements ActionListener {
 						inputNumList1.clear();
 						inputNumSet1.clear();
 						rowNum = 0;
+						eventRound.setText(String.valueOf(saveDataList.size() + 1));
+						showSlectedRow.setText("");
+						
 					}
 				}
 
@@ -632,6 +638,7 @@ public class MainFrame extends JFrame implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
+				
 				if (selected) {
 					if (isAllRowFull(statusLabels) == 5 && !modifying) {
 						inputNumList1.clear();
@@ -640,7 +647,9 @@ public class MainFrame extends JFrame implements ActionListener {
 					} else if (inputNumSet1.size() == 6) {
 						randombtn.setSelected(!selected);
 					} else {
-						showSlectedRow.setText(alphabets[dicisionRowNum(statusLabels)]);
+						if (!modifying) {
+							showSlectedRow.setText(alphabets[dicisionRowNum(statusLabels)]);
+						}
 						if (inputNumSet1.size() == 0) {
 							while (inputNumSet1.size() < 6) {
 								int randomNum = random.nextInt(44) + 1;
@@ -680,6 +689,7 @@ public class MainFrame extends JFrame implements ActionListener {
 						lottoNums[i].setBtnStatus(0);
 					}
 				}
+				disableButton();
 			}
 		});
 	}
@@ -764,6 +774,9 @@ public class MainFrame extends JFrame implements ActionListener {
 								inputNumList1.clear();
 								inputNumSet1.clear();
 								showSlectedRow.setText("");
+								for (int i = 0; i < lottoNums.length; i++) {
+									lottoNums[i].setEnabled(true);
+								}
 
 								for (int i = 0; i < lottoNums.length; i++) {
 									lottoNums[i].setBtnStatus(0);
@@ -827,6 +840,7 @@ public class MainFrame extends JFrame implements ActionListener {
 				}
 			}
 		}
+		disableButton();
 	}
 
 	public int falseCount(MyToggleButton[] arr) {
@@ -861,5 +875,25 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		}
 		return count;
+	}
+	
+	public void disableButton() {
+		int count = 0;
+		for (int i = 0; i < lottoNums.length; i++) {
+			if (lottoNums[i].getBtnStatus() != 0) {
+				count++;
+			}
+		}
+		if (count == 6) {
+			for (int i = 0; i < lottoNums.length; i++) {
+				if (lottoNums[i].getBtnStatus() == 0) {
+					lottoNums[i].setEnabled(false);
+				}
+			}
+		} else {
+			for (int i = 0; i < lottoNums.length; i++) {
+				lottoNums[i].setEnabled(true);
+			}
+		}
 	}
 }
