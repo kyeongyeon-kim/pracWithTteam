@@ -1,13 +1,18 @@
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
 class SaveData {
 	private int bonusNumber;
@@ -40,51 +45,7 @@ class SaveData {
 		this.money = money;
 	}
 }
-//class MainFrame{
-//	private List<SaveData> saveDataList = new ArrayList<>(); // 메인 필드에 추가
-//	private int countMoney;
-//	
-//	public MainFrame() {
-//		// 생성자
-//		JButton btnNew = new JButton("이전 회차"); // + group 및 토글버튼 주석 처리
-//		btnNew.setBounds(12, 69, 63, 64);;
-//		main.add(btnNew);
-//		btnNew.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				if (saveDataList.size() > 0) {
-//					countFream();
-//				}
-//			}
-//		});
-//		
-//		// 구매하기에 추가
-//		saveDataList.add(new SaveData());
-//		saveDataList.get(saveDataList.size() - 1).setBonusNumber(money.getRan().getLottoBonus());
-//		saveDataList.get(saveDataList.size() - 1).setMainNumber(money.getRan().getLottoMain());
-//
-//		int[][] saveDataInputNumberList = new int[5][6];
-//
-//		for (int i = 0; i < 5; i++) {
-//			boolean sw = false;
-//			for (int j = 0; j < 6; j++) {
-//				saveDataInputNumberList[i][j] = (int) resultArr[i].get(j);
-//				if ((int) resultArr[i].get(j) != 0) {
-//					sw = true;
-//				}
-//			}
-//			if (sw) {
-//				countMoney++;
-//			}
-//		}
-//		saveDataList.get(saveDataList.size() - 1).setInputNumber(saveDataInputNumberList);
-//		saveDataList.get(saveDataList.size() - 1).setMoney(money.getRan().getMoney());
-//	}
-//	
-//	public void countFream() {
-//		new CountFrame(saveDataList, countMoney);
-//	}
-//}
+
 public class CountFrame extends JDialog {
 	private JLabel[] lbl;
 	private JLabel[][] lbl_;
@@ -112,7 +73,6 @@ public class CountFrame extends JDialog {
 				try {
 					tfNum = Integer.valueOf(tf.getText());
 				} catch (Exception arg0) {
-					JOptionPane.showMessageDialog(null, "잘못된 입력입니다. ");
 				}
 				if (tfNum > 0 && tfNum <= saveDataList.size()) {
 					for (int i = 0; i < 7; i++) {
@@ -124,16 +84,14 @@ public class CountFrame extends JDialog {
 					}
 					for (int i = 0; i < 5; i++) {
 						for (int j = 0; j < 6; j++) {
-							if ((int) saveDataList.get(tfNum - 1).getInputNumber()[i][j] != 0) {
+//							if ((int) saveDataList.get(tfNum - 1).getInputNumber()[i][j] != 0) {
 								lbl_[i][j].setText(String.valueOf(saveDataList.get(tfNum - 1).getInputNumber()[i][j]));
-							} else {
-								lbl_[i][j].setText("");
-							}
+//							} else {
+//								lbl_[i][j].setText("");
+//							}
 						}
 					}
 					
-				} else {
-					JOptionPane.showMessageDialog(null, "잘못된 입력입니다. ");
 				}
 			}
 		});
@@ -147,7 +105,11 @@ public class CountFrame extends JDialog {
 			} else {
 				lbl[6].setText(String.valueOf(saveDataList.get(0).getBonusNumber()));
 			}
-			lbl[i].setBounds(i * 40 + 350, 20, 30, 30);
+			int bonus = 0;
+			if (i == 6) {
+				bonus = 20;
+			}
+			lbl[i].setBounds(i * 30 + 327 + bonus, 28, 30, 30);
 			add(lbl[i]);
 		}
 		
@@ -156,24 +118,39 @@ public class CountFrame extends JDialog {
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 6; j++) {
 				lbl_[i][j] = new JLabel("0");
-				lbl_[i][j].setBounds(j * 40 + 350, i * 40 + 120, 30, 30);
+				lbl_[i][j].setBounds(j * 40 + 330, i * 40 + 110, 30, 30);
 				add(lbl_[i][j]);
 			}
 		}
 		
 		// 당첨금, 사용 금액, 손익
 		lbl__ = new JLabel[3];
-		JLabel[] lbl___ = new JLabel[3];
+		JLabel[] lbl___ = new JLabel[5];
 		lbl___[0] = new JLabel("당첨금");
-		lbl___[1] = new JLabel("사용 금액");
+		lbl___[1] = new JLabel("사용금액");
 		lbl___[2] = new JLabel("손익");
+		lbl___[3] = new JLabel("당첨 번호");
+		lbl___[4] = new JLabel("입력 번호");
 		for (int i = 0; i < 3; i++) {
 			lbl__[i] = new JLabel();
-			lbl___[i].setBounds(i * 100 + 30, 20, 90, 30);
-			lbl__[i].setBounds(i * 100 + 30, 40, 90, 30);
 			add(lbl__[i]);
 			add(lbl___[i]);
 		}
+		for (int i = 0; i < 5; i++) {
+			add(lbl___[i]);
+		}
+		lbl___[0].setBounds(41, 2, 70, 30);
+		lbl___[1].setBounds(123, 2, 70, 30);
+		lbl___[2].setBounds(222, 2, 70, 30);
+		lbl___[3].setBounds(407, 2, 70, 30);
+		lbl___[4].setBounds(407, 73, 70, 30);
+		lbl__[0].setBounds(20, 12, 95, 60);
+		if (countMoney >= 0) {
+			lbl__[1].setBounds(118, 12, 95, 60);
+		} else if (countMoney < 0){
+			lbl__[1].setBounds(120, 12, 95, 60);
+		}
+		lbl__[2].setBounds(195, 12, 95, 60);
 		int sum = 0;
 		for (int i = 0; i < saveDataList.size(); i++) {
 			sum += saveDataList.get(i).getMoney();
@@ -182,7 +159,24 @@ public class CountFrame extends JDialog {
 		lbl__[1].setText(String.valueOf(countMoney * 1000));
 		lbl__[2].setText(String.valueOf(sum - countMoney * 1000));
 		
-		setSize(600, 400);
+		JButton btnEnd = new JButton("확인");
+		btnEnd.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		btnEnd.setBounds(265, 330, 70, 40);
+		add(btnEnd);
+		
+		JPanel pnl = new JPanel();
+		JLabel lnlBackGround = new JLabel();
+		lnlBackGround.setIcon(new ImageIcon(CountFrame.class.getResource("/countBackGround.png")));
+		pnl.add(lnlBackGround);
+		pnl.setBounds(0, 0, 600, 430);
+		add(pnl);
+		
+		setSize(600, 430);
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
