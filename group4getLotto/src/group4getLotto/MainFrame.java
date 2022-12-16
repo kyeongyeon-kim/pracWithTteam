@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -100,6 +101,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	private List<SaveData> saveDataList = new ArrayList<>(); // 메인 필드에 추가
 	private int countMoney;
 	private JLabel eventRound;
+	private JLabel payment;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -340,6 +342,53 @@ public class MainFrame extends JFrame implements ActionListener {
 		eventRound.setBorder(new TitledBorder(new LineBorder(Color.black),"회차"));
 		eventRound.setBounds(12, 69, 63, 64);
 		main.add(eventRound);
+		
+		payment = new JLabel("0원");
+		payment.setHorizontalAlignment(SwingConstants.CENTER);
+		payment.setOpaque(false);
+		payment.setBackground(new Color(255, 0, 0, 0));
+		payment.setBorder(new TitledBorder(new LineBorder(Color.black),"결제금액"));
+		payment.setBounds(482, 429, 100, 40);
+		main.add(payment);
+		
+		JButton resetAll = new JButton("초기화");
+		resetAll.setOpaque(false);
+		resetAll.setBackground(new Color(255, 0, 0, 0));
+		resetAll.setBounds(848, 429, 100, 40);
+		main.add(resetAll);
+		resetAll.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AbstractButton abstractButton = (AbstractButton) e.getSource();
+				boolean selected = abstractButton.getModel().isSelected();
+				for (int j = 0; j < inputLabels.length; j++) {
+					statusLabels[j].setText("상태");
+					for (int k = 0; k < inputLabels[j].length; k++) {
+						inputLabels[j][k].setIcon(new ImageIcon());
+						inputLabels[j][k].setText("0");
+						inputLabels[j][k].setForeground(Color.black);
+					}
+				}
+				for (int i = 0; i < lottoNums.length; i++) {
+					lottoNums[i].setSelected(selected);
+					lottoNums[i].setStatus(false);
+					lottoNums[i].setBtnStatus(0);
+					lottoNums[i].setEnabled(true);
+				}
+				for (int j = 0; j < 5; j++) {
+					changeBtns[j].setIcon(new ImageIcon("remove.png"));
+				}
+				inputNumList1.clear();
+				inputNumSet1.clear();
+				rowNum = 0;
+				eventRound.setText(String.valueOf(saveDataList.size() + 1));
+				showSlectedRow.setText("");
+				payment.setText(String.valueOf(isAllRowFull(statusLabels) * 1000) + "원");
+			}
+		});
+		
+		
 
 		// 수정버튼 메소드
 		changeBtns = new JButton[5];
@@ -546,7 +595,7 @@ public class MainFrame extends JFrame implements ActionListener {
 					}
 					showSlectedRow.setText("");
 					rowNum = 0;
-					
+					payment.setText(String.valueOf(isAllRowFull(statusLabels) * 1000) + "원");
 				}
 			});
 		}
@@ -622,7 +671,7 @@ public class MainFrame extends JFrame implements ActionListener {
 						rowNum = 0;
 						eventRound.setText(String.valueOf(saveDataList.size() + 1));
 						showSlectedRow.setText("");
-						
+						payment.setText(String.valueOf(isAllRowFull(statusLabels) * 1000) + "원");
 					}
 				}
 
@@ -774,6 +823,8 @@ public class MainFrame extends JFrame implements ActionListener {
 								inputNumList1.clear();
 								inputNumSet1.clear();
 								showSlectedRow.setText("");
+								payment.setText(String.valueOf(isAllRowFull(statusLabels) * 1000) + "원");
+								
 								for (int i = 0; i < lottoNums.length; i++) {
 									lottoNums[i].setEnabled(true);
 								}
