@@ -175,9 +175,28 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		});
 
+		// 1등 시뮬레이션
+				JButton btnFirst = new JButton("<HTML><body style='text-align:center;'>1등<br>시뮬</body></HTML>");
+				btnFirst.setBounds(12, 291, 63, 64);
+				btnFirst.setBackground(new Color(255, 0, 0, 0));
+				btnFirst.setOpaque(false);
+				main.add(btnFirst);
+				btnFirst.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						int[][] firstList = new int[5][6];
+						for (int i = 0; i < 5; i++) {
+							for (int j = 0; j < 6; j++) {
+								firstList[i][j] = Integer.valueOf(inputLabels[i][j].getText());
+							}
+						}
+						new FirstSimulationData(firstList);
+					}
+				});
+		
 		// 설명서버튼
 		JButton manualBtn = new JButton("<HTML><body style='text-align:center;'>설명<br>안내</body></HTML>");
-		manualBtn.setBounds(12, 291, 63, 64);
+		manualBtn.setBounds(12, 365, 63, 64);
 		manualBtn.setBackground(new Color(255, 0, 0, 0));
 		manualBtn.setOpaque(false);
 		main.add(manualBtn);
