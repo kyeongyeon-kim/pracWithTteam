@@ -71,7 +71,6 @@ class FirstSimulationData {
 				default:
 					break;
 				}
-				System.out.println(numberFirst);
 				if (count == 6) {
 					Arrays.sort(intList);
 					number[0] = numberFirst;
@@ -204,7 +203,7 @@ public class FirstSimulation extends JDialog {
 		JPanel pnl = new JPanel();
 		JLabel lblPnl = new JLabel();
 		pnl.add(lblPnl);
-		lblPnl.setIcon(new ImageIcon(FirstSimulation.class.getResource("/firstBackGround.png")));
+		lblPnl.setIcon(new ImageIcon(FirstSimulation.class.getResource("firstBackGround.png")));
 		pnl.setBounds(0, 0, 400, 440);
 		add(pnl);
 		
