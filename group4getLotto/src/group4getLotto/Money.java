@@ -53,10 +53,10 @@ public Money(List[] list) {
       setContentPane(scrollPane);
 
       // 당첨번호 라벨
-      JLabel lucklbl = new JLabel("당첨번호");
+      JLabel lucklbl = new JLabel("당첨번호             BONUS");
       backgroud2.add(lucklbl);
       lucklbl.setFont(new Font("HY견고딕", Font.PLAIN, 17));
-      lucklbl.setBounds(165, 160, 400, 40);
+      lucklbl.setBounds(140, 160, 400, 40);
 
       // 당첨금 라벨
       JLabel crtlbl = new JLabel("당첨금 :");
