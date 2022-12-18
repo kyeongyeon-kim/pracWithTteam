@@ -43,7 +43,7 @@ public class ManualDialog extends JDialog {
 		add(panel);
 		pack();
 		setTitle("로또프로그램 사용 설명");
-		setSize(610, 930);
+		setSize(610, 980);
 		setLocationRelativeTo(null);
 		setVisible(true);
 

@@ -370,7 +370,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		payment.setBounds(482, 429, 100, 40);
 		main.add(payment);
 		
-		JButton resetAll = new JButton("초기화");
+		JButton resetAll = new JButton("<HTML><body style='text-align:center;'>전체<br>초기화</body></HTML>");
 		resetAll.setOpaque(false);
 		resetAll.setBackground(new Color(255, 0, 0, 0));
 		resetAll.setBounds(848, 429, 100, 40);
